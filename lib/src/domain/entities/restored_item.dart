@@ -10,5 +10,5 @@ abstract  class RestoredItem extends Equatable
   
   @override
   List<Object> get props => [id, itemId, quantity, description!];
-  // RestoredItem copyWith({
+  // RestoredItem copyWith({ // 
 }
