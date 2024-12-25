@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 permissions:
   contents: write
 
@@ -37,4 +38,24 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: build/web
+
+    - name: Check if GitHub Pages is Available
+      run: |
+        # Replace <USERNAME> and <REPOSITORY> with your GitHub username and repository name
+        PAGE_URL="https://wajdi2001.github.io/piece_autos/"
         
+        echo "Checking if GitHub Pages is available at $PAGE_URL..."
+        
+        for i in {1..10}; do
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" $PAGE_URL)
+          if [ "$STATUS" -eq 200 ]; then
+            echo "GitHub Pages is live at $PAGE_URL"
+            exit 0
+          else
+            echo "GitHub Pages is not yet available. Retrying in 30 seconds... ($i/10)"
+            sleep 30
+          fi
+        done
+        
+        echo "GitHub Pages did not become available. Please check your deployment."
+        exit 1
