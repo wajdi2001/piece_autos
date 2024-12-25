@@ -1,4 +1,4 @@
-import 'package:piece_autos/core/typedef.dart';
+import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/brand.dart';
 
 class BrandModel extends Brand {

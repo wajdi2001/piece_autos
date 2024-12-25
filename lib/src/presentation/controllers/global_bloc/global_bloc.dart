@@ -11,9 +11,14 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
      
     });
     on<GlobalNavigatorEvent>(_onNavigatorEvent);
+    on<GlobalCategoryNavigatorEvent>(_onCategoryNavigatorEvent);
   }
 
   void _onNavigatorEvent(GlobalNavigatorEvent event, Emitter<GlobalState> emit) {
     emit(state.copyWith(indexPage: event.index,routerName: event.route));
+  }
+
+  void _onCategoryNavigatorEvent(GlobalCategoryNavigatorEvent event, Emitter<GlobalState> emit) {
+    emit(state.copyWith(categoryTitile: event.title));
   }
 }

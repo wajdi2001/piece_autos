@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/home_app_bar_widget.dart';
+import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/home_drawer.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/service_widget.dart';
 
 import 'widgets/contact_footer_Widget.dart';
@@ -47,7 +48,10 @@ class HomePage extends StatelessWidget {
                   .fadeIn(duration: 600.ms, delay: 200.ms)
                   .slideY(begin: -0.2, end: 0),
             ]),
-          ));
+          ),
+          
+          
+          drawer: HomeDrawer());
         },
       ),
     );

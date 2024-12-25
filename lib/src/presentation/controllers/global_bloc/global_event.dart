@@ -15,3 +15,10 @@ class GlobalNavigatorEvent extends GlobalEvent
   
   
 }
+
+class GlobalCategoryNavigatorEvent extends GlobalEvent
+
+{
+  final String title;
+  const GlobalCategoryNavigatorEvent({required this.title});
+}
