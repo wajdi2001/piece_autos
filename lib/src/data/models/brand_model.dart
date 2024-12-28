@@ -20,14 +20,14 @@ class BrandModel extends Brand {
     return BrandModel(
       id: json['id'],
       name: json['name'],
-      image: json['image'],
+      image: json['imageUrl'],
     );
   }
   DataMap toJson() {
     return {
       'id': id,
       'name': name,
-      'image': image,
+      'imageUrl': image,
     };
   }
 }

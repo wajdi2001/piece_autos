@@ -22,3 +22,8 @@ class GlobalCategoryNavigatorEvent extends GlobalEvent
   final String title;
   const GlobalCategoryNavigatorEvent({required this.title});
 }
+
+class GlobalGetAllBrandsEvent extends GlobalEvent
+{
+  
+}

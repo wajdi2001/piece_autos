@@ -10,11 +10,22 @@ import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/wi
 import 'widgets/contact_footer_Widget.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage( {super.key,required this.navigationShell});
   final StatefulNavigationShell navigationShell;
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+  
+    super.initState();
+  }
+  @override
+  
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocConsumer<GlobalBloc, GlobalState>(
@@ -36,7 +47,7 @@ class HomePage extends StatelessWidget {
                     .slideY(begin: -0.2, end: 0),
               SizedBox(height: 10),
               //state.indexPage.getHomePageBody(),
-              navigationShell,
+              widget.navigationShell,
               SizedBox(height: 20),
               ServiceWidget()
                   .animate()

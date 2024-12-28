@@ -1,0 +1,20 @@
+
+
+//////signUp 
+final result = await authRepository.signUp({
+  'name': 'John Doe',
+  'email': 'john.doe@example.com',
+  'password': 'securePassword123',
+  'phoneNumber': '123456789',
+});
+
+result.fold(
+  (failure) {
+    print(failure.errorMessage); // Outputs: "400 Error: Bad Request" (for example)
+  },
+  (_) {
+    print('SignUp successful!');
+  },
+);
+
+

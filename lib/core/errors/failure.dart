@@ -25,3 +25,12 @@ class LocalFailure extends Failure {
   LocalFailure.fromException(LocalException exception)
       : this(message: exception.message, statusCode: 0);
 }
+
+
+
+class ServerFailure extends Failure {
+  const ServerFailure({required super.message,  super.statusCode=500});
+
+  ServerFailure.fromException(APIException exception)
+      : this(message: exception.message);
+}
