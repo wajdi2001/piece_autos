@@ -85094,7 +85094,7 @@ gmP(){return A.b([this.a,this.b],t.jl)}}
 A.m8.prototype={}
 A.vj.prototype={}
 A.atv.prototype={
-$0(){var s=A.aJm("http://10.0.2.2.6:8080",!0),r=new A.a1y($,new A.Lw(A.b([B.Aq],t.i6)),$,new A.a4P(51200),!1)
+$0(){var s=A.aJm("http://localhost:8080",!0),r=new A.a1y($,new A.Lw(A.b([B.Aq],t.i6)),$,new A.a4P(51200),!1)
 r.uv$=s
 r.Vc$=new A.a_q(A.au(t.lZ))
 $.ty.b=r
@@ -85137,7 +85137,7 @@ YM(a){var s=0,r=A.K(t.Wd),q,p=2,o,n,m,l,k,j,i,h,g
 var $async$vV=A.L(function(b,c){if(b===1){o=c
 s=p}while(true)switch(s){case 0:h=null
 p=4
-n=A.dj("http://10.0.2.2.6:8080"+a).XL(h)
+n=A.dj("http://localhost:8080"+a).XL(h)
 j=t.N
 m=A.ak(["Content-Type","application/json;charset=UTF-8","Accept","application/json"],j,j)
 s=7
