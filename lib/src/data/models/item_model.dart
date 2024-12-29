@@ -4,42 +4,62 @@ import 'package:piece_autos/src/domain/entities/item.dart';
 class ItemModel extends Item {
   const ItemModel({
     required super.id,
-      required super.name,
-      required super.images,
-      required super.brandId,
-      required super.ref,
-      required super.price,
-      required super.hasDiscount,
-      required super.status,
-      required super.quantity,
-      required super.tvaId
+    required super.name,
+    required super.images,
+    required super.brandId,
+    required super.ref,
+    required super.price,
+    required super.hasDiscount,
+    super.discountPercentage,
+    required super.status,
+    required super.quantity,
+    super.availableIn,
+    required super.tvaId,
+    super.adaptableCarModels,
+    super.description,
+    super.tags,
   });
-  
-  ItemModel copyWith({
-    String? id,
-    String? name,
-    List<String>? images,
-    String? brandId,
-    String? ref,
-    double? price,
-    bool? hasDiscount,
-    ItemStatus? status,
-    int? quantity,
-    String? tvaId
-    
-  }) {
+
+  /// Factory method to create an `ItemModel` from JSON
+  factory ItemModel.fromJson(Map<String, dynamic> json) {
     return ItemModel(
-      id: id?? this.id,
-      name: name?? this.name,
-      images: images?? this.images,
-      brandId: brandId?? this.brandId,
-      ref: ref?? this.ref,
-      price: price?? this.price,
-      hasDiscount: hasDiscount?? this.hasDiscount,
-      status: status?? this.status,
-      quantity: quantity?? this.quantity,
-      tvaId: tvaId?? this.tvaId,
-    
+      id: json['id'],
+      name: json['name'],
+      images: List<String>.from(json['imagesUrl'] ?? []),
+      brandId: json['brandId'],
+      ref: json['ref'],
+      price: json['price'].toDouble(),
+      hasDiscount: json['hasDiscount'],
+      discountPercentage: json['discountPercentage']?.toDouble(),
+      status: ItemStatus.values[json['itemStatus']],
+      quantity: json['quantity'] ?? 0,
+      availableIn: json['availableIn'],
+      tvaId: json['tvaRate'].toString(),
+      adaptableCarModels:List<String>.from(json['adaptableWith'] ?? []), 
+      description: (json['description'] as Map<String, dynamic>?)
+          ?.map((key, value) => MapEntry(key, value.toString())),
+      tags: List<String>.from(json['tags'] ?? []),
     );
+  }
+
+  /// Convert `ItemModel` to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'imagesUrl': images,
+      'brandId': brandId,
+      'ref': ref,
+      'price': price,
+      'hasDiscount': hasDiscount,
+      'discountPercentage': discountPercentage,
+      'itemStatus': status.index,
+      'quantity': quantity,
+      'availableIn': availableIn,
+      'tvaRate': tvaId,
+      'adaptableWith': adaptableCarModels,
+      'description': description,
+      'tags': tags,
+    };
   }
 }

@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/core/services/enums.dart';
+import 'package:piece_autos/src/data/models/item_model.dart';
 import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/category_details_page/widgets/custom_category_item_widget.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -17,7 +19,17 @@ class CategoryDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        return GestureDetector(
+         List<ItemModel>items=[];
+        if(state.status==GlobalStatus.loaded)
+        {
+          items = state.items;
+        }
+        return state.status==GlobalStatus.loading?CircularProgressIndicator() : state.status==GlobalStatus.error || items.isEmpty? 
+        
+        Center(
+          child: Text("Loading...")
+        )
+        :GestureDetector(
           onTap: () {
             onTapItemdetails();
           },
@@ -62,9 +74,9 @@ class CategoryDetailPage extends StatelessWidget {
                       ? 1
                       : 1, // Ajuste la taille des cartes
                       ),
-                      itemCount: 8, // Exemple : 8 articles
+                      itemCount: items.length, // Exemple : 8 articles
                       itemBuilder: (context, index) {
-                        return CustomCategoryItemWidget();
+                        return CustomCategoryItemWidget(itemModel: items[index],);
                       },
                     ),
                   ),

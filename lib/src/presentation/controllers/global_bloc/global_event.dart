@@ -45,3 +45,19 @@ class GlobalSelectCarModelEvent extends GlobalEvent {
 
   GlobalSelectCarModelEvent(this.carModelId);
 }
+
+class GlobalGetAllTagsEvent extends GlobalEvent {
+  final DataMap? query;
+
+  const GlobalGetAllTagsEvent({this.query});
+
+  
+}
+
+class GlobalGetAllItemsEvent extends GlobalEvent {
+  final DataMap? query;
+
+  const GlobalGetAllItemsEvent({this.query});
+
+  
+}
