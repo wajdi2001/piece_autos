@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:piece_autos/src/data/datasources/remote/brand_remote_data_source/brand_remote_data_source.dart';
+import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
-import 'package:piece_autos/src/data/repositories/brand_repo_impl/brand_repo_impl.dart';
+import 'package:piece_autos/src/data/models/car_model_model.dart';
+import 'package:piece_autos/src/domain/usecases/car_model_use_cases/ger_all_car_models.dart';
 
+import '../../../../core/services/enums.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../domain/usecases/brand_use_cases/get_all_brand.dart';
 
@@ -19,6 +21,10 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalNavigatorEvent>(_onNavigatorEvent);
     on<GlobalCategoryNavigatorEvent>(_onCategoryNavigatorEvent);
     on<GlobalGetAllBrandsEvent>(_onGetAllBrandsEvent);
+    on<GlobalGetAllCarModelEvent>(_onGetAllCarModelEvent);
+    on<GlobalSelectBrandEvent>(_onSelectBrand);
+on<GlobalSelectCarModelEvent>(_onSelectCarModel);
+
   }
 
   void _onNavigatorEvent(GlobalNavigatorEvent event, Emitter<GlobalState> emit) {
@@ -29,18 +35,105 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     emit(state.copyWith(categoryTitile: event.title));
   }
   
-  void _onGetAllBrandsEvent(GlobalGetAllBrandsEvent event, Emitter<GlobalState> emit) async{
-   GetAllBrandsUseCase getAllBrands =sl<GetAllBrandsUseCase>();
-    var res = await getAllBrands();
-    
-    
-    res.fold((l) => null, 
-    
-    
-    (r) =>emit(state.copyWith(brands: r.map(
-        (e) => BrandModel(id: e.id,image: e.image,name: e.name)).toList())));
-    
+ void _onGetAllBrandsEvent(GlobalGetAllBrandsEvent event, Emitter<GlobalState> emit) async {
+  emit(state.copyWith(isBrandsLoading: true));
 
+  GetAllBrandsUseCase getAllBrands = sl<GetAllBrandsUseCase>();
+  var res = await getAllBrands();
 
+  res.fold(
+    (failure) => emit(state.copyWith(isBrandsLoading: false)),
+    (brands) => emit(state.copyWith(
+      isBrandsLoading: false,
+      brands: brands.map((e) => BrandModel(id: e.id, image: e.image, name: e.name)).toList(),
+    )),
+  );
+}
+
+ void _onGetAllCarModelEvent(
+    GlobalGetAllCarModelEvent event, Emitter<GlobalState> emit) async {
+  final getAllCarModel = sl<GetAllCarModelsUseCase>();
+
+  try {
+    // Ensure query is not null, pass empty map if null
+    final query = event.query ?? {};
+
+    // Fetch data using the use case
+    final res = await getAllCarModel(query);
+
+    // Handle the result using fold
+    res.fold(
+      (failure) {
+        // Emit failure state
+        emit(state.copyWith(
+          status: GlobalStatus.error,
+          errorMessage: failure.message,
+        ));
+      },
+      (carModels) {
+        // Emit success state with transformed car models
+        emit(state.copyWith(
+          status: GlobalStatus.loaded,
+          carModels: carModels.map((e) {
+            return CarModelModel(
+              id: e.id,
+              name: e.name,
+              brandId: e.brandId,
+              yearOfConstruction: e.yearOfConstruction,
+            );
+          }).toList(),
+        ));
+      },
+    );
+  } catch (e) {
+    // Catch unexpected errors and emit error state
+    emit(state.copyWith(
+      status: GlobalStatus.error,
+      errorMessage: e.toString(),
+    ));
   }
+}
+
+void _onSelectBrand(GlobalSelectBrandEvent event, Emitter<GlobalState> emit) async {
+  emit(state.copyWith(
+    isCarModelsLoading: true,
+    selectedBrandId: event.brandId,
+    carModels: [],
+    selectedCarModelId: null,
+    selectedYearOfConstruction: null,
+  ));
+
+  GetAllCarModelsUseCase getAllCarModels = sl<GetAllCarModelsUseCase>();
+  var query = {"brandId": event.brandId};
+  var res = await getAllCarModels(query);
+
+  res.fold(
+    (failure) {
+      emit(state.copyWith(isCarModelsLoading: false));
+    },
+    (carModels) {
+      emit(state.copyWith(
+        isCarModelsLoading: false,
+        carModels: carModels.map((e) => CarModelModel(
+          id: e.id,
+          name: e.name,
+          brandId: e.brandId,
+          yearOfConstruction: e.yearOfConstruction,
+        )).toList(),
+      ));
+    },
+  );
+}
+void _onSelectCarModel(GlobalSelectCarModelEvent event, Emitter<GlobalState> emit) {
+  final selectedCarModel = state.carModels.firstWhere(
+    (carModel) => carModel.id == event.carModelId,
+    orElse: () => throw Exception("Car model not found"),
+  );
+
+  emit(state.copyWith(
+    selectedCarModelId: event.carModelId,
+    selectedYearOfConstruction: selectedCarModel.yearOfConstruction,
+  ));
+}
+
 }

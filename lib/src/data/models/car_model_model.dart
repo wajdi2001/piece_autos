@@ -15,7 +15,7 @@ class CarModelModel extends CarModel{
      String? id,
      String? name,
      String? brandId,
-     String? yearOfConstruction,
+     int? yearOfConstruction,
     
   }) {
     return CarModelModel(

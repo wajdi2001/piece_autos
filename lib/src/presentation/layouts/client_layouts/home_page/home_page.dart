@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/home_app_bar_widget.dart';
@@ -23,14 +24,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
   
     super.initState();
+    context.read<GlobalBloc>()..add(GlobalGetAllBrandsEvent())..add(GlobalGetAllCarModelEvent());
   }
   @override
   
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocConsumer<GlobalBloc, GlobalState>(
-        listener: (context, state) {
-        },
+      child: BlocBuilder<GlobalBloc, GlobalState>(
+        buildWhen: (previous, current) => current.status == GlobalStatus.loaded,
         builder: (context, state) {
           return Scaffold(
               body: Container(

@@ -5,22 +5,52 @@ part of 'global_bloc.dart';
   final int indexPage;
   final String categoryTitile;
   final List<BrandModel> brands;
+  final String? selectedBrandId; // Currently selected brand
+  final String? selectedCarModelId; // Currently selected car model
+    final int? selectedYearOfConstruction; // Selected year of construction
+    final String errorMessage;
+    final bool isBrandsLoading;
+  final bool isCarModelsLoading;
+  final bool isYearsLoading;
+
+  final GlobalStatus status;
+  final List<CarModelModel> carModels;
    const  GlobalState({
     this.indexPage = 0,
     this.routerName = 'home',
     this.categoryTitile = '',
     this.brands = const [],
+    this.status = GlobalStatus.initial,
+    this.carModels = const [],
+    this.selectedBrandId,
+    this.selectedCarModelId,
+    this.selectedYearOfConstruction,
+    this.errorMessage = '',
+    this.isBrandsLoading = false,
+    this.isCarModelsLoading = false,
+    this.isYearsLoading = false,
  
   });
 
   
   @override
-  List<Object> get props => [indexPage, routerName, categoryTitile, brands];
+  List<Object> get props => [indexPage, routerName, categoryTitile, brands,status, carModels,isBrandsLoading,
+        isCarModelsLoading,
+        isYearsLoading, ];
   GlobalState copyWith({
     int? indexPage,
     String? routerName,
     String? categoryTitile,
     List<BrandModel>? brands,
+     GlobalStatus? status,
+     List<CarModelModel>? carModels,
+     String? selectedBrandId,
+     String? selectedCarModelId,
+      int? selectedYearOfConstruction,
+      String? errorMessage,
+       bool? isBrandsLoading,
+    bool? isCarModelsLoading,
+    bool? isYearsLoading,
     
   }) {
     return GlobalState(
@@ -28,6 +58,15 @@ part of 'global_bloc.dart';
       routerName: routerName ?? this.routerName,
       categoryTitile: categoryTitile ?? this.categoryTitile,
       brands: brands ?? this.brands,
+      status: status??this.status,
+      carModels: carModels?? this.carModels,
+      selectedBrandId: selectedBrandId?? this.selectedBrandId,
+      selectedCarModelId: selectedCarModelId?? this.selectedCarModelId,
+      selectedYearOfConstruction: selectedYearOfConstruction?? this.selectedYearOfConstruction,
+      errorMessage: errorMessage?? this.errorMessage,
+      isBrandsLoading: isBrandsLoading ?? this.isBrandsLoading,
+      isCarModelsLoading: isCarModelsLoading ?? this.isCarModelsLoading,
+      isYearsLoading: isYearsLoading ?? this.isYearsLoading,
     
     );
   }

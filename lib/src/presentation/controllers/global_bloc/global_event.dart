@@ -27,3 +27,21 @@ class GlobalGetAllBrandsEvent extends GlobalEvent
 {
   
 }
+class GlobalGetAllCarModelEvent extends GlobalEvent
+{
+  final DataMap? query;
+  const GlobalGetAllCarModelEvent({ this.query});
+}
+
+
+class GlobalSelectBrandEvent extends GlobalEvent {
+  final String brandId;
+
+  GlobalSelectBrandEvent(this.brandId);
+}
+
+class GlobalSelectCarModelEvent extends GlobalEvent {
+  final String carModelId;
+
+  GlobalSelectCarModelEvent(this.carModelId);
+}

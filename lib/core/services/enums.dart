@@ -19,3 +19,10 @@ enum OrderStatus{
   delivered,
   cancelled
 }
+enum GlobalStatus{
+  initial,
+  initialLoaded,
+  loading,
+  loaded,
+    error
+}

@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 import 'constants.dart';
-import 'package:http/http.dart' as http;
+//import 'package:http/http.dart' as http;
 class DioHelper {
   static late Dio dio;
 
@@ -15,7 +15,7 @@ class DioHelper {
     );
   }
 
-   Future<Response> getDataDio({
+   Future<Response> getData({
   required String url,
   Map<String, dynamic>? query,
 }) async {
@@ -34,14 +34,13 @@ class DioHelper {
       queryParameters: query,
     );
   } catch (e) {
-    print('Error: $e');
     rethrow;
   }
 }
 
 
 
-Future<http.Response> getData({
+/*Future<http.Response> getData({
   required String url,
   Map<String, dynamic>? query,
 }) async {
@@ -66,10 +65,9 @@ Future<http.Response> getData({
           'Failed to load data: ${response.statusCode} ${response.reasonPhrase}');
     }
   } catch (e) {
-    print('Error: $e');
     rethrow;
   }
-}
+}*/
 
    Future<Response>   postData({
     required String url,

@@ -1,5 +1,3 @@
-
-
 import 'package:dartz/dartz.dart';
 import 'package:piece_autos/core/utils/typedef.dart';
 
@@ -13,32 +11,45 @@ class AuthRepositoryImpl implements AuthRepository {
 
   AuthRepositoryImpl({required this.remoteDataSource});
 
- @override
+  @override
   ResultFuture<Unit> signUp(DataMap params) async {
-  try {
-    await remoteDataSource.signUp(params);
-    return Right(unit); 
-  } catch (e) {
-    if (e is APIException) {
-      return Left(APIFailure(message: e.message, statusCode: e.statusCode));
-    } else {
-      return Left(APIFailure(message: e.toString(), statusCode: 500)); // Default status code for unknown errors
+    try {
+      await remoteDataSource.signUp(params);
+      return Right(unit); // Return success
+    } on APIException catch (e) {
+      return Left(
+        APIFailure(
+          message: e.message,
+          statusCode: e.statusCode,
+        ),
+      ); // Handle API-specific exceptions
+    } catch (e) {
+      return Left(
+        ServerFailure(
+          message: e.toString(),
+        ),
+      ); // Handle unknown exceptions
     }
   }
-}
-
 
   @override
   ResultFuture<Unit> signIn(DataMap params) async {
     try {
       await remoteDataSource.signIn(params);
-      return Right(unit); 
+      return Right(unit); // Return success
+    } on APIException catch (e) {
+      return Left(
+        APIFailure(
+          message: e.message,
+          statusCode: e.statusCode,
+        ),
+      ); // Handle API-specific exceptions
     } catch (e) {
-    if (e is APIException) {
-      return Left(APIFailure(message: e.message, statusCode: e.statusCode));
-    } else {
-      return Left(APIFailure(message: e.toString(), statusCode: 500)); // Default status code for unknown errors
+      return Left(
+        ServerFailure(
+          message: e.toString(),
+        ),
+      ); // Handle unknown exceptions
     }
-  }
   }
 }

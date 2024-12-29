@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
+import 'package:piece_autos/src/data/models/car_model_model.dart';
 import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
 import 'package:piece_autos/src/presentation/shared/library/searchble_drop_down/searchable_paginated_dropdown.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -28,9 +30,14 @@ class CustomBodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<GlobalBloc, GlobalState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
+        List<BrandModel> brands = [];
+        List<CarModelModel> carModels = [];
+
+        brands = state.brands;
+        carModels = state.carModels;
+
         return Stack(
           children: [
             Center(
@@ -56,12 +63,12 @@ class CustomBodyWidget extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // Dropdowns Section
-
+                    state.status ==GlobalStatus.loaded?
                     _buildDropdownSection(
                       context,
-                      brands: state.brands,
-
-                    ),
+                      brands: brands,
+                      carModels: carModels
+                    ):CircularProgressIndicator(),
 
                     const SizedBox(height: 10),
 
@@ -83,93 +90,128 @@ class CustomBodyWidget extends StatelessWidget {
   }
 
   // Dropdown Section for Desktop/Tablet
-  Widget _buildDropdownSection(BuildContext context,{required List<BrandModel> brands} ) {
-    // Détermine le nombre de colonnes en fonction de la largeur de l'écran
-    int crossAxisCount = ResponsiveBreakpoints.of(context).isDesktop ||
-            ResponsiveBreakpoints.of(context).isTablet
-        ? 2
-        : 1; // 1 colonne pour Mobile
+Widget _buildDropdownSection(BuildContext context,
+    {required List<BrandModel> brands, required List<CarModelModel> carModels}) {
+  int crossAxisCount = ResponsiveBreakpoints.of(context).isDesktop ||
+          ResponsiveBreakpoints.of(context).isTablet
+      ? 2
+      : 1;
 
-    // Liste des dropdowns
-    final List<Map<String, dynamic>> dropdownItems = [
-      {
-        "hint": "Choisir la marque",
-        "searchHint": "Saisir la marque",
-        "items": brands.map((e) => e.name).toList(),
-      },
-      {
-        "hint": "Choisir le modèle",
-        "searchHint": "Saisir le modèle",
-        "items": itemsModels,
-      },
-      {
-        "hint": "Année",
-        "searchHint": "Saisir l'année",
-        "items": itemsYears,
-      },
-      {
-        "hint": "Motorisation",
-        "searchHint": "Saisir la motorisation",
-        "items": itemsMotorizations,
-      },
-    ];
-
-    return GridView.builder(
-      shrinkWrap: true, // Important pour éviter les conflits de hauteur
-      physics:
-          const NeverScrollableScrollPhysics(), // Désactiver le défilement du GridView
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount, // Nombre d'éléments par ligne
-        crossAxisSpacing: 10, // Espacement horizontal entre les éléments
-        mainAxisSpacing: 10, // Espacement vertical entre les éléments
-        childAspectRatio: ResponsiveBreakpoints.of(context).isDesktop
-            ? 15
-            : ResponsiveBreakpoints.of(context).isTablet
-                ? 7
-                : 5,
+  return GridView(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: crossAxisCount,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: ResponsiveBreakpoints.of(context).isDesktop
+          ? 15
+          : ResponsiveBreakpoints.of(context).isTablet
+              ? 7
+              : 5,
+    ),
+    children: [
+      // Brand Dropdown
+      BlocBuilder<GlobalBloc, GlobalState>(
+        builder: (context, state) {
+          return state.isBrandsLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _buildSearchableDropdown(
+                  enabled: true,
+                  hint: state.selectedBrandId != null
+                      ? state.brands
+                          .firstWhere((e) => e.id == state.selectedBrandId)
+                          .name
+                      : "Choisir la marque",
+                  searchHint: "Saisir la marque",
+                  items: brands.map((e) => e.name).toList(),
+                  onItemSelected: (selectedBrandName) {
+                    final selectedBrand = brands.firstWhere((brand) => brand.name == selectedBrandName);
+                    context.read<GlobalBloc>().add(GlobalSelectBrandEvent(selectedBrand.id));
+                  },
+                );
+        },
       ),
-      itemCount: dropdownItems.length, // Nombre total de dropdowns
-      itemBuilder: (context, index) {
-        final dropdown = dropdownItems[index];
-        return _buildSearchableDropdown(
-          hint: dropdown["hint"],
-          searchHint: dropdown["searchHint"],
-          items: dropdown["items"],
-        );
-      },
-    );
-  }
+
+      // Car Model Dropdown
+      BlocBuilder<GlobalBloc, GlobalState>(
+        builder: (context, state) {
+          return state.isCarModelsLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _buildSearchableDropdown(
+                  enabled: state.selectedBrandId != null,
+                  hint: state.selectedCarModelId != null
+                      ? state.carModels
+                          .firstWhere((e) => e.id == state.selectedCarModelId)
+                          .name
+                      : "Choisir le modèle",
+                  searchHint: "Saisir le modèle",
+                  items: carModels.map((e) => e.name).toList(),
+                  onItemSelected: (selectedCarModelName) {
+                    final selectedCarModel = carModels.firstWhere(
+                        (carModel) => carModel.name == selectedCarModelName);
+                    context.read<GlobalBloc>().add(GlobalSelectCarModelEvent(selectedCarModel.id));
+                  },
+                );
+        },
+      ),
+
+      // Year Dropdown
+      BlocBuilder<GlobalBloc, GlobalState>(
+        builder: (context, state) {
+          return _buildSearchableDropdown(
+            enabled: true,
+            hint: state.selectedYearOfConstruction != null
+                ? state.carModels.where((e)=>e.id==state.selectedCarModelId).first.yearOfConstruction.toString()
+                : "Année",
+            searchHint: "Saisir l'année",
+            items: state.selectedCarModelId == null?[]:
+                 [state.carModels.where((e)=>e.id==state.selectedCarModelId).first.yearOfConstruction.toString()]
+                ,
+            onItemSelected: (_) {},
+          );
+        },
+      ),
+    ],
+  );
+}
 
   // Searchable Dropdown Widget
   Widget _buildSearchableDropdown({
-    required String hint,
-    required String searchHint,
-    required List<String> items,
-  }) {
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Colors.white,
-      ),
-      child: SearchableDropdown<String>(
-        dialogOffset: 0.2,
-        isDialogExpanded: false,
-        searchHintText: searchHint,
-        hintText: Text(hint),
-        items: List.generate(
-          items.length,
-          (i) => SearchableDropdownMenuItem(
-            value: items[i],
-            label: items[i],
-            child: Text(items[i]),
-          ),
+  required String hint,
+  required String searchHint,
+  required List<dynamic> items,
+  required Function(String) onItemSelected, 
+  required bool enabled// Callback for item selection
+}) {
+  return Container(
+    decoration: const BoxDecoration(
+      borderRadius: BorderRadius.all(Radius.circular(8)),
+      color: Colors.white,
+    ),
+    child: SearchableDropdown<String>(
+      isEnabled: enabled,
+      dialogOffset: 0.2,
+      isDialogExpanded: false,
+      searchHintText: searchHint,
+      hintText: Text(hint),
+      items: List.generate(
+        items.length,
+        (i) => SearchableDropdownMenuItem(
+        
+          onTap: () => onItemSelected(items[i]), // Trigger callback on selection
+          value: items[i],
+          label: items[i],
+          child: Text(items[i]),
+
         ),
       ),
-    )
-        .animate()
-        .fadeIn(duration: 600.ms, delay: 100.ms)
-        .slideY(begin: -0.2, end: 0);
-  }
+    ),
+  )
+      .animate()
+      .fadeIn(duration: 600.ms, delay: 100.ms)
+      .slideY(begin: -0.2, end: 0);
+}
 
   // Validate Button
   Widget _buildValidateButton() {

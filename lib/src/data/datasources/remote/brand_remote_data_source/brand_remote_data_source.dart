@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:piece_autos/core/errors/exceptions.dart';
 
@@ -22,8 +21,8 @@ class BrandRemoteDataSourceImpl implements BrandRemoteDataSource {
       
     );
     if (response.statusCode == 200) {
-      DataMap res = jsonDecode(response.body);
-      return res;
+      
+      return response.data;
     }
     throw APIException(
         message: "operation has failed", statusCode: response.statusCode!);

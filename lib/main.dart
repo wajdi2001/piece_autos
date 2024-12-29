@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piece_autos/core/utils/dio_helper.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
+import 'core/services/injection_container.dart';
 import 'src/presentation/controllers/blocObserver.dart';
 import 'src/presentation/controllers/global_bloc/global_bloc.dart';
 import 'package:piece_autos/core/services/injection_container.dart' as di;
@@ -29,7 +29,8 @@ class MyApp extends StatelessWidget {
     );
 
     return BlocProvider(
-      create: (context) => GlobalBloc()..add(GlobalGetAllBrandsEvent()),
+      lazy: false,
+      create: (context) => sl<GlobalBloc>(),
       child: ResponsiveBreakpoints.builder(
         breakpoints: [
           const Breakpoint(start: 0, end: 450, name: MOBILE),

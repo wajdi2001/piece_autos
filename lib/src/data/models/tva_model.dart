@@ -1,3 +1,4 @@
+import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/tva.dart';
 
 class TvaModel extends TVA{
@@ -19,6 +20,25 @@ class TvaModel extends TVA{
       percentage: percentage?? this.percentage,
     
     );
+
     
  
-}}
+}
+
+//fromJson
+  factory TvaModel.fromJson(Map<String, dynamic> json) {
+    return TvaModel(
+      id: json['id'],
+      name: json['name'],
+      percentage: json['percentage'],
+    );
+  }
+  //toJSON
+  DataMap toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'percentage': percentage,
+    };
+  }
+}

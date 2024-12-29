@@ -4,7 +4,7 @@ abstract class CarModel extends Equatable
 {
   final String id;
   final String name;
-  final String yearOfConstruction;
+  final int yearOfConstruction;
   final String brandId;
 
   const CarModel({
