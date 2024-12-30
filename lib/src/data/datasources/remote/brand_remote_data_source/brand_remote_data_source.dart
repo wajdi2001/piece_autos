@@ -1,4 +1,3 @@
-
 import 'package:piece_autos/core/errors/exceptions.dart';
 
 import '../../../../../core/services/injection_container.dart';
@@ -6,7 +5,6 @@ import '../../../../../core/utils/dio_helper.dart';
 import '../../../../../core/utils/typedef.dart';
 
 abstract class BrandRemoteDataSource {
-
   Future<DataMap> getAllBrands(); // For GET
   Future<DataMap> createOrUpdateBrand(DataMap params); // For POST
   Future<bool> deleteBrand(String id); // For DELETE
@@ -18,10 +16,8 @@ class BrandRemoteDataSourceImpl implements BrandRemoteDataSource {
   Future<DataMap> getAllBrands() async {
     final response = await dioHelper.getData(
       url: '/api/Brand/GetAll',
-      
     );
     if (response.statusCode == 200) {
-      
       return response.data;
     }
     throw APIException(
@@ -45,10 +41,9 @@ class BrandRemoteDataSourceImpl implements BrandRemoteDataSource {
   @override
   Future<bool> deleteBrand(String id) async {
     var result = await dioHelper.deleteData(
-      url: '/api/Brand/',
-      query: {'id': id},
+      url: '/api/Brand/$id', // Use the id in the URL path
     );
-    if (result.statusCode == 200 ) {
+    if (result.statusCode == 200) {
       return true;
     }
     throw APIException(

@@ -1,10 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
 import 'package:piece_autos/src/data/models/car_model_model.dart';
+
+import 'package:piece_autos/src/domain/usecases/brand_use_cases/delete_brand.dart';
+
 import 'package:piece_autos/src/data/models/tag_model.dart';
+
 import 'package:piece_autos/src/domain/usecases/car_model_use_cases/ger_all_car_models.dart';
 
 import '../../../../core/services/enums.dart';
@@ -18,6 +23,7 @@ part 'global_event.dart';
 part 'global_state.dart';
 
 class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
+  static GlobalBloc get(context) => BlocProvider.of(context);
   GlobalBloc() : super(GlobalState()) {
     on<GlobalEvent>((event, emit) {});
     on<GlobalNavigatorEvent>(_onNavigatorEvent);
@@ -29,6 +35,13 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalGetAllTagsEvent>(_onGetAllTagsEvent);
     on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
     on<GlobalSwitchSearchBarEvent>(_onSwitchSearchBarEvent);
+
+ 
+    on<GlobalDeleteBrandEvent>(_onDeleteBrandModel);
+
+
+
+
   }
 
   void _onNavigatorEvent(
@@ -51,6 +64,8 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     res.fold(
       (failure) => emit(state.copyWith(isBrandsLoading: false)),
       (brands) => emit(state.copyWith(
+
+        status: GlobalStatus.loaded,
         isBrandsLoading: false,
         brands: brands
             .map((e) => BrandModel(id: e.id, image: e.image, name: e.name))
@@ -154,7 +169,46 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     ));
   }
 
-  void _onGetAllTagsEvent(
+
+
+
+  void _onDeleteBrandModel(
+      GlobalDeleteBrandEvent event, Emitter<GlobalState> emit) async {
+    final deleteBrandUserCase = sl<DeleteBrandUseCase>();
+    emit(state.copyWith(status: GlobalStatus.loading));
+    var result = await deleteBrandUserCase(event.brandId);
+    result.fold((f) {
+      emit(state.copyWith(
+          status: GlobalStatus.error, errorMessage: f.errorMessage));
+    }, (hasBeenDeleted) {
+      if (hasBeenDeleted) {
+        final updatedBrands =
+            state.brands.where((x) => x.id != event.brandId).toList();
+        emit(
+            state.copyWith(brands: updatedBrands, status: GlobalStatus.loaded));
+      }
+    });
+  }
+
+       
+void _onSelectCarModel(GlobalSelectCarModelEvent event, Emitter<GlobalState> emit) {
+  emit(state.copyWith(
+    isYearsLoading: true,
+    
+    
+  ));
+  final selectedCarModel = state.carModels.firstWhere(
+    (carModel) => carModel.id == event.carModelId,
+    orElse: () => throw Exception("Car model not found"),
+  );
+
+  emit(state.copyWith(
+    isYearsLoading: false,
+    selectedCarModelId: event.carModelId,
+    selectedYearOfConstruction: selectedCarModel.yearOfConstruction,
+  ));
+}
+void _onGetAllTagsEvent(
       GlobalGetAllTagsEvent event, Emitter<GlobalState> emit) async {
     final getAllTagsUseCase = sl<GetAllTagsUseCase>();
 
