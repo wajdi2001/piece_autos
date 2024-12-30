@@ -1,10 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:piece_autos/core/utils/constants.dart';
+import 'package:piece_autos/src/data/models/item_model.dart';
 
 class CustomCategoryItemWidget extends StatelessWidget {
+  final ItemModel itemModel;
   const CustomCategoryItemWidget({
     super.key,
+    required this.itemModel,
   });
 
   @override
@@ -26,15 +30,15 @@ class CustomCategoryItemWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Exemple d'image d'article
-          Image.asset(
-            "assets/images/filtre_air.jpeg",
+          Image.network(
+            '$baseUrl/${itemModel.images[0]}',
             height: 80,
             fit: BoxFit.contain,
           ),
           const SizedBox(height: 10),
           // Nom de l'article
-          const Text(
-            "Nom de l'article",
+           Text(
+            itemModel.name,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
@@ -43,8 +47,8 @@ class CustomCategoryItemWidget extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           // Prix de l'article
-          const Text(
-            "140.068 TND",
+           Text(
+            itemModel.price.toString(),
             style: TextStyle(
               fontSize: 14,
               color: Colors.green,

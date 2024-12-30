@@ -146,10 +146,10 @@ Widget _buildDropdownSection(BuildContext context,
                           .name
                       : "Choisir le modèle",
                   searchHint: "Saisir le modèle",
-                  items: carModels.map((e) => e.name).toList(),
+                  items: carModels.map((e) => '${e.name}   (${ e.yearOfConstruction.toString()})').toList(),
                   onItemSelected: (selectedCarModelName) {
                     final selectedCarModel = carModels.firstWhere(
-                        (carModel) => carModel.name == selectedCarModelName);
+                        (carModel) => carModel.name == selectedCarModelName.split(' ')[0]);
                     context.read<GlobalBloc>().add(GlobalSelectCarModelEvent(selectedCarModel.id));
                   },
                 );
@@ -165,7 +165,7 @@ Widget _buildDropdownSection(BuildContext context,
                 ? state.carModels.where((e)=>e.id==state.selectedCarModelId).first.yearOfConstruction.toString()
                 : "Année",
             searchHint: "Saisir l'année",
-            items: state.selectedCarModelId == null?[]:
+            items: state.selectedYearOfConstruction == null?[]:
                  [state.carModels.where((e)=>e.id==state.selectedCarModelId).first.yearOfConstruction.toString()]
                 ,
             onItemSelected: (_) {},

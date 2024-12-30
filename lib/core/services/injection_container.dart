@@ -8,12 +8,18 @@ import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_blo
 import '../../src/data/datasources/remote/auth_remote_data_source/auth_remote_data_source.dart';
 import '../../src/data/datasources/remote/brand_remote_data_source/brand_remote_data_source.dart';
 import '../../src/data/datasources/remote/car_model_remote_data_source/car_model_remote_data_source.dart';
+import '../../src/data/datasources/remote/item_remote_data_source/item_remote_data_source.dart';
+import '../../src/data/datasources/remote/tag_remote_data_source/tag_remote_data_source.dart';
 import '../../src/data/repositories/auth_repo_impl/auth_repo_impl.dart';
 import '../../src/data/repositories/brand_repo_impl/brand_repo_impl.dart';
 import '../../src/data/repositories/car_repo_impl/car_repo_impl.dart';
+import '../../src/data/repositories/item_repo_impl/item_repo_impl.dart';
+import '../../src/data/repositories/tag_repo_impl/tag_repo_impl.dart';
 import '../../src/domain/repositories/auth_repo/auth_repo.dart';
 import '../../src/domain/repositories/brand_repo/brand_repo.dart';
 import '../../src/domain/repositories/car_model_repo/car_model_repo.dart';
+import '../../src/domain/repositories/item_repo/item_repo.dart';
+import '../../src/domain/repositories/tag_repo/tag_repo.dart';
 import '../../src/domain/usecases/auth_usesCases/sign_in_use_case.dart';
 import '../../src/domain/usecases/auth_usesCases/sign_up_use_case.dart';
 import '../../src/domain/usecases/brand_use_cases/create_or_update_brand.dart';
@@ -21,6 +27,10 @@ import '../../src/domain/usecases/brand_use_cases/delete_brand.dart';
 import '../../src/domain/usecases/brand_use_cases/get_all_brand.dart';
 import '../../src/domain/usecases/car_model_use_cases/delete_car_model.dart';
 import '../../src/domain/usecases/car_model_use_cases/ger_all_car_models.dart';
+import '../../src/domain/usecases/item_use_cases/get_all_tems.dart';
+import '../../src/domain/usecases/tag_use_cases/create_or_update.dart';
+import '../../src/domain/usecases/tag_use_cases/delete_tag.dart';
+import '../../src/domain/usecases/tag_use_cases/get_all_tags.dart';
 import '../../src/domain/usecases/tva_use_cases/create_or_update.dart';
 import '../../src/domain/usecases/tva_use_cases/delete_tva.dart';
 import '../../src/domain/usecases/tva_use_cases/get_all_tva.dart';
@@ -91,7 +101,29 @@ void init() async {
   // Use Cases
   sl.registerLazySingleton<GetAllCarModelsUseCase>(
       () => GetAllCarModelsUseCase(repository: sl()));
-  sl.registerLazySingleton(
-      () => CreateOrUpdateCarModelUseCase(repository: sl()));
-  sl.registerLazySingleton(() => DeleteCarModelUseCase(repository: sl()));
+
+  sl.registerLazySingleton(() => CreateOrUpdateCarModelUseCase(repository:  sl()));
+  sl.registerLazySingleton(() => DeleteCarModelUseCase(repository:  sl()));
+
+
+  //tag
+  // Data sources
+  sl.registerLazySingleton<TagRemoteDataSource>(() => TagRemoteDataSourceImpl());
+  // Repositories
+  sl.registerLazySingleton<TagRepository>(() => TagRepositoryImpl(sl()));
+  // Use Cases
+  sl.registerLazySingleton(() => GetAllTagsUseCase(repository:  sl()));
+  sl.registerLazySingleton(() => CreateOrUpdateTagUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteTagUseCase(repository: sl()));
+
+
+  //item
+  // Data sources
+   sl.registerLazySingleton<ItemRemoteDataSource>(() => ItemRemoteDataSourceImpl());
+  // // Repositories
+   sl.registerLazySingleton<ItemRepository>(() => ItemRepositoryImpl(sl()));
+  // // Use Cases
+    sl.registerLazySingleton(() => GetAllItemsUseCase(repository: sl()));
+  // // sl.registerLazySingleton(() => CreateOrUpdateItemUseCase(repository: sl()));
+  // // sl.registerLazySingleton(() => DeleteItemUseCase(repository: sl()));  
 }

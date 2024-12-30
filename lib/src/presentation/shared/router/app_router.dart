@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:piece_autos/src/presentation/layouts/admin_dashboard/admin_layout.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/Item_page/item_page.dart';
@@ -6,6 +7,7 @@ import 'package:piece_autos/src/presentation/layouts/client_layouts/category_det
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/home_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/custom_body_widget.dart';
 
+import '../../controllers/global_bloc/global_bloc.dart';
 import '../../layouts/client_layouts/product_details_page/product_details_page.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -38,9 +40,19 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: homeRoute,
-                builder: (context, state) => CustomBodyWidget(
-                  onPressed: () {
-                    StatefulNavigationShell.of(context).goBranch(1);
+                builder: (context, state) =>
+                    BlocBuilder<GlobalBloc, GlobalState>(
+                  builder: (context, state) {
+                    return CustomBodyWidget(
+                      onPressed: () {
+                        if(state.selectedYearOfConstruction!=null)
+                        {
+                          context.read<GlobalBloc>().add(GlobalGetAllTagsEvent());
+                          StatefulNavigationShell.of(context).goBranch(1);
+                        }
+                        
+                      },
+                    );
                   },
                 ),
               ),
@@ -53,7 +65,7 @@ class AppRouter {
               GoRoute(
                 path: itemsRoute,
                 builder: (context, state) => ItemPage(
-                  onTapCategory: () {
+
                     StatefulNavigationShell.of(context).goBranch(2);
                   },
                 ),
@@ -64,6 +76,7 @@ class AppRouter {
           StatefulShellBranch(
             navigatorKey: _tabNavigatorKey3,
             routes: [
+
               GoRoute(
                 path: categorieDetailsRoute,
                 builder: (context, state) {
@@ -75,14 +88,15 @@ class AppRouter {
               ),
             ],
           ),
-          // Branch 4: Product Details
+
           StatefulShellBranch(
             navigatorKey: _tabNavigatorKey4,
             routes: [
               GoRoute(
-                path: productRoute,
-                builder: (context, state) => ProductDetailPage(),
-              ),
+
+                  path: productRoute,
+                  builder: (context, state) => ProductDetailPage()),
+
             ],
           ),
         ],

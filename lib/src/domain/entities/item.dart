@@ -2,8 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/src/domain/entities/car_model.dart';
 
-abstract class Item extends Equatable
-{
+abstract class Item extends Equatable {
   final String id;
   final String name;
   final List<String> images;
@@ -16,7 +15,7 @@ abstract class Item extends Equatable
   final int quantity;
   final int? availableIn;
   final String tvaId;
-  final List<CarModel>? adaptableCarModels;
+  final List<String>? adaptableCarModels;
   final Map<String, String>? description;
   final List<String>? tags;
 
@@ -37,24 +36,23 @@ abstract class Item extends Equatable
     this.description,
     this.tags,
   });
-  
+
   @override
   List<Object> get props => [
-    id,
-    name,
-    images,
-    brandId,
-    ref,
-    price,
-    hasDiscount,
-    discountPercentage!,
-    status,
-    quantity,
-    availableIn!,
-    tvaId,
-    adaptableCarModels!,
-    description!,
-    tags!,
-  ];
-  
+        id,
+        name,
+        images,
+        brandId,
+        ref,
+        price,
+        hasDiscount,
+        discountPercentage ?? 0,
+        status,
+        quantity,
+        availableIn ?? 0,
+        tvaId,
+        adaptableCarModels ?? [],
+        description ?? {},
+        tags ?? [],
+      ];
 }
