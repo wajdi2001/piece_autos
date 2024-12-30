@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/src/presentation/shared/router/app_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../../../core/services/enums.dart';
@@ -69,6 +70,13 @@ class HomeAppBarWidget extends StatelessWidget {
                                       color: Colors.black),
                                   onPressed: () {},
                                 ),
+                                IconButton(
+                                    icon: const Icon(Icons.person,
+                                        color: Colors.black),
+                                    onPressed: () {
+                                      AppRouter.router.go(AppRouter.adminDashboardRoute);
+                                    },
+                                  ),
                               IconButton(
                                 icon: const Icon(Icons.shopping_cart,
                                     color: Colors.black),
@@ -111,6 +119,13 @@ class HomeAppBarWidget extends StatelessWidget {
                                       context.read<GlobalBloc>().add(
                                           GlobalSwitchSearchBarEvent(
                                               show: true));
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.person,
+                                        color: Colors.black),
+                                    onPressed: () {
+                                      AppRouter.router.goNamed(AppRouter.adminDashboardRoute);
                                     },
                                   ),
                                   IconButton(
