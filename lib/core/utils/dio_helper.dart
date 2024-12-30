@@ -1,112 +1,129 @@
-
 import 'package:dio/dio.dart';
-
+import 'package:flutter/foundation.dart';
 import 'constants.dart';
-//import 'package:http/http.dart' as http;
+
 class DioHelper {
   static late Dio dio;
 
-  static init() {
+  /// Initializes the Dio instance with default configurations.
+  static void init() {
     dio = Dio(
       BaseOptions(
         baseUrl: baseUrl,
         receiveDataWhenStatusError: true,
+        connectTimeout: const Duration(seconds: 10), // Connection timeout
+        receiveTimeout: const Duration(seconds: 15), // Response timeout
       ),
     );
   }
 
-   Future<Response> getData({
-  required String url,
-  Map<String, dynamic>? query,
-}) async {
-  // Add default headers
-  dio.options.headers = {
-    'Content-Type': 'application/json;charset=UTF-8',
-    'Accept': 'application/json',
-  };
-
-  // Optional: Add CORS-specific headers if required by the server
-  dio.options.headers['Access-Control-Allow-Origin'] = '*'; // Adjust this based on your server config
-
-  try {
-    return await dio.get(
-      url,
-      queryParameters: query,
-    );
-  } catch (e) {
-    rethrow;
+  /// Sets custom headers for Dio requests.
+  void setHeaders(Map<String, dynamic> headers) {
+    dio.options.headers.addAll(headers);
   }
-}
 
+  void resetHeaders() {
+    // Preserve the Authorization header if it exists
+    final authorization = dio.options.headers['Authorization'];
 
-
-/*Future<http.Response> getData({
-  required String url,
-  Map<String, dynamic>? query,
-}) async {
-  try {
-    // Construct the query parameters into a query string
-    final uri = Uri.parse(baseUrl+url).replace(queryParameters: query);
-
-    // Add default headers
-    final headers = {
+    dio.options.headers = {
       'Content-Type': 'application/json;charset=UTF-8',
       'Accept': 'application/json',
     };
 
-    // Make the HTTP GET request
-    final response = await http.get(uri, headers: headers);
-
-    // Check for errors in the response
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      return response;
-    } else {
-      throw Exception(
-          'Failed to load data: ${response.statusCode} ${response.reasonPhrase}');
+    // Reapply the Authorization header if it was set
+    if (authorization != null) {
+      dio.options.headers['Authorization'] = authorization;
     }
-  } catch (e) {
-    rethrow;
   }
-}*/
 
-   Future<Response>   postData({
+  /// Performs a GET request.
+  Future<Response> getData({
     required String url,
-   required  Map<String, dynamic> data,
+    Map<String, dynamic>? query,
+  }) async {
+    try {
+      resetHeaders(); // Ensure default headers are applied
+      return await dio.get(
+        url,
+        queryParameters: query,
+      );
+    } on DioException catch (e) {
+      _handleDioError(e);
+      rethrow;
+    }
+  }
+
+  /// Performs a POST request.
+  Future<Response> postData({
+    required String url,
+    required Map<String, dynamic> data,
     Map<String, dynamic>? query,
     bool isFormData = false,
   }) async {
-    if (isFormData) {
-      dio.options.headers['Content-Type'] = 'multipart/form-data';
-      return dio.post(
-        url,
-        queryParameters: query,
-        data: FormData.fromMap(data),
-      );
-    } else {
-      dio.options.headers['Content-Type'] = 'application/json;charset=UTF-8';
+    try {
+      resetHeaders(); // Ensure default headers are applied
 
-      return dio.post(
-        url,
-        queryParameters: query,
-        data: data,
-      );
+      if (isFormData) {
+        dio.options.headers['Content-Type'] = 'multipart/form-data';
+        return await dio.post(
+          url,
+          queryParameters: query,
+          data: FormData.fromMap(data),
+        );
+      } else {
+        dio.options.headers['Content-Type'] = 'application/json;charset=UTF-8';
+        return await dio.post(
+          url,
+          queryParameters: query,
+          data: data,
+        );
+      }
+    } on DioException catch (e) {
+      _handleDioError(e);
+      rethrow;
     }
   }
 
-   void setHeder(Map<String, dynamic> heders) {
-    dio.options.headers = heders;
+  /// Sets the Bearer token for authorization
+  void setToken(String token) {
+    dio.options.headers['Authorization'] = 'Bearer $token';
   }
 
-   Future<Response> deleteData({
+  /// Clears any existing token
+  void clearToken() {
+    dio.options.headers.remove('Authorization');
+  }
+
+  /// Performs a DELETE request.
+  Future<Response> deleteData({
     required String url,
-     Map<String, dynamic>? data,
     Map<String, dynamic>? query,
   }) async {
-     dio.options.headers['Content-Type'] = 'application/json;charset=UTF-8';
-    return await dio.delete(
-      "$url${query!['id']}",
-      
-      
-    );
+    try {
+      resetHeaders(); // Ensure default headers are applied
+
+      return await dio.delete(
+        url,
+        queryParameters: query,
+      );
+    } on DioException catch (e) {
+      _handleDioError(e);
+      rethrow;
+    }
+  }
+
+  /// Handles Dio-specific errors and logs them for debugging.
+  void _handleDioError(DioException e) {
+    // Log the error (you can replace this with a logging library)
+    if (kDebugMode) {
+      print('Dio Error: ${e.message}');
+    }
+    if (e.response != null) {
+      if (kDebugMode) {
+        print('Response Data: ${e.response?.data}');
+        print('Response Status Code: ${e.response?.statusCode}');
+      }
+    }
   }
 }

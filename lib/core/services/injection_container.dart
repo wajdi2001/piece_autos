@@ -4,6 +4,7 @@ import 'package:piece_autos/src/data/datasources/remote/tva_remote_data_source/t
 import 'package:piece_autos/src/data/repositories/tva_repo_impl/tva_repo_impl.dart';
 import 'package:piece_autos/src/domain/repositories/tva_repo/tva_repo.dart';
 import 'package:piece_autos/src/domain/usecases/car_model_use_cases/create_or_update.dart';
+import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_bloc.dart';
 import '../../src/data/datasources/remote/auth_remote_data_source/auth_remote_data_source.dart';
 import '../../src/data/datasources/remote/brand_remote_data_source/brand_remote_data_source.dart';
 import '../../src/data/datasources/remote/car_model_remote_data_source/car_model_remote_data_source.dart';
@@ -47,6 +48,8 @@ void init() async {
   /// Global Bloc
   sl.registerLazySingleton<GlobalBloc>(() => GlobalBloc());
 
+  sl.registerLazySingleton<DashboardBloc>(() => DashboardBloc());
+
   /// Auth
   // Data sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
@@ -66,41 +69,39 @@ void init() async {
       () => BrandRemoteDataSourceImpl());
 
   // Repositories
-  sl.registerLazySingleton<BrandRepository>(
-      () => BrandRepositoryImpl(sl()));
+  sl.registerLazySingleton<BrandRepository>(() => BrandRepositoryImpl(sl()));
 
   // Use cases
   sl.registerLazySingleton(() => GetAllBrandsUseCase(sl()));
   sl.registerLazySingleton(() => CreateOrUpdateBrandUseCase(repository: sl()));
   sl.registerLazySingleton(() => DeleteBrandUseCase(repository: sl()));
 
-
-
- /// TVA
+  /// TVA
   // Data sources
   sl.registerLazySingleton<TVARemoteDataSource>(
       () => TVARemoteDataSourceImpl());
 
   // Repositories
   sl.registerLazySingleton<TVARepository>(
-      () => TVARepositoryImpl(remoteDataSource:  sl()));
+      () => TVARepositoryImpl(remoteDataSource: sl()));
 
 //useCases
-   sl.registerLazySingleton(() => GetAllTVAsUseCase(sl()));
+  sl.registerLazySingleton(() => GetAllTVAsUseCase(sl()));
   sl.registerLazySingleton(() => CreateOrUpdateTVAUseCase(sl()));
   sl.registerLazySingleton(() => DeleteTVAUseCase(sl()));
 
-
   //CarModel
   // Data sources
-   sl.registerLazySingleton<CarModelRemoteDataSource>(() => CarModelRemoteDataSourceImpl());
-   // Repositories
-   sl.registerLazySingleton<CarModelRepository>(() => CarModelRepositoryImpl( sl()));
- 
+  sl.registerLazySingleton<CarModelRemoteDataSource>(
+      () => CarModelRemoteDataSourceImpl());
+  // Repositories
+  sl.registerLazySingleton<CarModelRepository>(
+      () => CarModelRepositoryImpl(sl()));
 
   // Use Cases
   sl.registerLazySingleton<GetAllCarModelsUseCase>(
       () => GetAllCarModelsUseCase(repository: sl()));
+
   sl.registerLazySingleton(() => CreateOrUpdateCarModelUseCase(repository:  sl()));
   sl.registerLazySingleton(() => DeleteCarModelUseCase(repository:  sl()));
 

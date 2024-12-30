@@ -43,12 +43,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         data: params,
       );
 
-      if (response.statusCode != 200 && response.statusCode != 201) {
+      if (response.statusCode != 200) {
         throw APIException(
           message: 'Failed to sign in',
           statusCode: response.statusCode ?? 500,
         );
       }
+      final token = response.data['token'];
+      dioHelper.setToken(token);
     } catch (e) {
       throw APIException(
         message: e.toString(),

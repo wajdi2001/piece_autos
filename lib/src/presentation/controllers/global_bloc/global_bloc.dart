@@ -1,10 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
 import 'package:piece_autos/src/data/models/car_model_model.dart';
+
+import 'package:piece_autos/src/domain/usecases/brand_use_cases/delete_brand.dart';
+
 import 'package:piece_autos/src/data/models/tag_model.dart';
+
 import 'package:piece_autos/src/domain/usecases/car_model_use_cases/ger_all_car_models.dart';
 
 import '../../../../core/services/enums.dart';
@@ -18,118 +23,151 @@ part 'global_event.dart';
 part 'global_state.dart';
 
 class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
+  static GlobalBloc get(context) => BlocProvider.of(context);
   GlobalBloc() : super(GlobalState()) {
-    on<GlobalEvent>((event, emit) {
-     
-    });
+    on<GlobalEvent>((event, emit) {});
     on<GlobalNavigatorEvent>(_onNavigatorEvent);
     on<GlobalCategoryNavigatorEvent>(_onCategoryNavigatorEvent);
     on<GlobalGetAllBrandsEvent>(_onGetAllBrandsEvent);
     on<GlobalGetAllCarModelEvent>(_onGetAllCarModelEvent);
     on<GlobalSelectBrandEvent>(_onSelectBrand);
+ 
+    on<GlobalDeleteBrandEvent>(_onDeleteBrandModel);
 on<GlobalSelectCarModelEvent>(_onSelectCarModel);
 on<GlobalGetAllTagsEvent>(_onGetAllTagsEvent);
 on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
 
+
   }
 
-  void _onNavigatorEvent(GlobalNavigatorEvent event, Emitter<GlobalState> emit) {
-    emit(state.copyWith(indexPage: event.index,routerName: event.route));
+  void _onNavigatorEvent(
+      GlobalNavigatorEvent event, Emitter<GlobalState> emit) {
+    emit(state.copyWith(indexPage: event.index, routerName: event.route));
   }
 
-  void _onCategoryNavigatorEvent(GlobalCategoryNavigatorEvent event, Emitter<GlobalState> emit) {
+  void _onCategoryNavigatorEvent(
+      GlobalCategoryNavigatorEvent event, Emitter<GlobalState> emit) {
     emit(state.copyWith(categoryTitile: event.title));
   }
-  
- void _onGetAllBrandsEvent(GlobalGetAllBrandsEvent event, Emitter<GlobalState> emit) async {
-  emit(state.copyWith(isBrandsLoading: true));
 
-  GetAllBrandsUseCase getAllBrands = sl<GetAllBrandsUseCase>();
-  var res = await getAllBrands();
+  void _onGetAllBrandsEvent(
+      GlobalGetAllBrandsEvent event, Emitter<GlobalState> emit) async {
+    emit(state.copyWith(isBrandsLoading: true));
 
-  res.fold(
-    (failure) => emit(state.copyWith(isBrandsLoading: false)),
-    (brands) => emit(state.copyWith(
-      isBrandsLoading: false,
-      brands: brands.map((e) => BrandModel(id: e.id, image: e.image, name: e.name)).toList(),
-    )),
-  );
-}
+    GetAllBrandsUseCase getAllBrands = sl<GetAllBrandsUseCase>();
+    var res = await getAllBrands();
 
- void _onGetAllCarModelEvent(
-    GlobalGetAllCarModelEvent event, Emitter<GlobalState> emit) async {
-  final getAllCarModel = sl<GetAllCarModelsUseCase>();
+    res.fold(
+      (failure) => emit(state.copyWith(isBrandsLoading: false)),
+      (brands) => emit(state.copyWith(
+        status: GlobalStatus.loaded,
+        isBrandsLoading: false,
+        brands: brands
+            .map((e) => BrandModel(id: e.id, image: e.image, name: e.name))
+            .toList(),
+      )),
+    );
+  }
 
-  try {
-    // Ensure query is not null, pass empty map if null
-    final query = event.query ?? {};
+  void _onGetAllCarModelEvent(
+      GlobalGetAllCarModelEvent event, Emitter<GlobalState> emit) async {
+    final getAllCarModel = sl<GetAllCarModelsUseCase>();
 
-    // Fetch data using the use case
-    final res = await getAllCarModel(query);
+    try {
+      // Ensure query is not null, pass empty map if null
+      final query = event.query ?? {};
 
-    // Handle the result using fold
+      // Fetch data using the use case
+      final res = await getAllCarModel(query);
+
+      // Handle the result using fold
+      res.fold(
+        (failure) {
+          // Emit failure state
+          emit(state.copyWith(
+            status: GlobalStatus.error,
+            errorMessage: failure.message,
+          ));
+        },
+        (carModels) {
+          // Emit success state with transformed car models
+          emit(state.copyWith(
+            status: GlobalStatus.loaded,
+            carModels: carModels.map((e) {
+              return CarModelModel(
+                id: e.id,
+                name: e.name,
+                brandId: e.brandId,
+                yearOfConstruction: e.yearOfConstruction,
+              );
+            }).toList(),
+          ));
+        },
+      );
+    } catch (e) {
+      // Catch unexpected errors and emit error state
+      emit(state.copyWith(
+        status: GlobalStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  void _onSelectBrand(
+      GlobalSelectBrandEvent event, Emitter<GlobalState> emit) async {
+    emit(state.copyWith(
+      isCarModelsLoading: true,
+      selectedBrandId: event.brandId,
+      carModels: [],
+      selectedCarModelId: null,
+      selectedYearOfConstruction: null,
+    ));
+
+    GetAllCarModelsUseCase getAllCarModels = sl<GetAllCarModelsUseCase>();
+    var query = {"brandId": event.brandId};
+    var res = await getAllCarModels(query);
+
     res.fold(
       (failure) {
-        // Emit failure state
-        emit(state.copyWith(
-          status: GlobalStatus.error,
-          errorMessage: failure.message,
-        ));
+        emit(state.copyWith(isCarModelsLoading: false));
       },
       (carModels) {
-        // Emit success state with transformed car models
         emit(state.copyWith(
-          status: GlobalStatus.loaded,
-          carModels: carModels.map((e) {
-            return CarModelModel(
-              id: e.id,
-              name: e.name,
-              brandId: e.brandId,
-              yearOfConstruction: e.yearOfConstruction,
-            );
-          }).toList(),
+          isCarModelsLoading: false,
+          carModels: carModels
+              .map((e) => CarModelModel(
+                    id: e.id,
+                    name: e.name,
+                    brandId: e.brandId,
+                    yearOfConstruction: e.yearOfConstruction,
+                  ))
+              .toList(),
         ));
       },
     );
-  } catch (e) {
-    // Catch unexpected errors and emit error state
-    emit(state.copyWith(
-      status: GlobalStatus.error,
-      errorMessage: e.toString(),
-    ));
   }
-}
+  
 
-void _onSelectBrand(GlobalSelectBrandEvent event, Emitter<GlobalState> emit) async {
-  emit(state.copyWith(
-    isCarModelsLoading: true,
-    selectedBrandId: event.brandId,
-    carModels: [],
-    selectedCarModelId: null,
-    selectedYearOfConstruction: null,
-  ));
 
-  GetAllCarModelsUseCase getAllCarModels = sl<GetAllCarModelsUseCase>();
-  var query = {"brandId": event.brandId};
-  var res = await getAllCarModels(query);
-
-  res.fold(
-    (failure) {
-      emit(state.copyWith(isCarModelsLoading: false));
-    },
-    (carModels) {
+  void _onDeleteBrandModel(
+      GlobalDeleteBrandEvent event, Emitter<GlobalState> emit) async {
+    final deleteBrandUserCase = sl<DeleteBrandUseCase>();
+    emit(state.copyWith(status: GlobalStatus.loading));
+    var result = await deleteBrandUserCase(event.brandId);
+    result.fold((f) {
       emit(state.copyWith(
-        isCarModelsLoading: false,
-        carModels: carModels.map((e) => CarModelModel(
-          id: e.id,
-          name: e.name,
-          brandId: e.brandId,
-          yearOfConstruction: e.yearOfConstruction,
-        )).toList(),
-      ));
-    },
-  );
-}
+          status: GlobalStatus.error, errorMessage: f.errorMessage));
+    }, (hasBeenDeleted) {
+      if (hasBeenDeleted) {
+        final updatedBrands =
+            state.brands.where((x) => x.id != event.brandId).toList();
+        emit(
+            state.copyWith(brands: updatedBrands, status: GlobalStatus.loaded));
+      }
+    });
+  }
+
+       
 void _onSelectCarModel(GlobalSelectCarModelEvent event, Emitter<GlobalState> emit) {
   emit(state.copyWith(
     isYearsLoading: true,

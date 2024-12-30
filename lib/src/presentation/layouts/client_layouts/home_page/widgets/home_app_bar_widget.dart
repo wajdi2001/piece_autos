@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
 import 'package:piece_autos/src/data/models/car_model_model.dart';
+
 import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
+import 'package:piece_autos/src/presentation/shared/router/app_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../controllers/global_bloc/global_bloc.dart';
@@ -32,6 +36,62 @@ class HomeAppBarWidget extends StatelessWidget {
                       _buildMenuItem("Embrayages"),
                       _buildMenuItem("Accessoires"),
                       Expanded(
+
+                        child: Text(
+                          "Huiles et additifs",
+                          style: _menuItemStyle(),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Embrayages",
+                          style: _menuItemStyle(),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Accessoires",
+                          style: _menuItemStyle(),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/pieceAutoLogo.png'),
+                                  fit: BoxFit.scaleDown)),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Mon compte",
+                          style: _menuItemStyle(),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "Panier",
+                          style: _menuItemStyle(),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          "A propos",
+                          style: _menuItemStyle(),
+                        ),
+                      ),
+                      Expanded(
+                        child: GestureDetector(
+                            onTap: () =>
+                                context.go(AppRouter.adminDashboardRoute),
+                            child: Icon(
+                              Icons.admin_panel_settings,
+                              size: 20,
+                            )),
+                      )
+
                         flex: 2,
                         child: Container(
                           decoration: const BoxDecoration(
@@ -45,6 +105,7 @@ class HomeAppBarWidget extends StatelessWidget {
                       _buildMenuItem("Mon compte"),
                       _buildMenuItem("Panier"),
                       _buildMenuItem("A propos"),
+
                     ],
                   )
                 : Row(
@@ -58,12 +119,16 @@ class HomeAppBarWidget extends StatelessWidget {
                       Container(
                         height: 50,
                         width: 75,
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/pieceAutoLogo.png'),
-                            fit: BoxFit.contain,
+
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/pieceAutoLogo.png',
                           ),
-                        ),
+                          fit: BoxFit.contain,
+                        )),
+                       
+
                       ),
                     ],
                   ),
