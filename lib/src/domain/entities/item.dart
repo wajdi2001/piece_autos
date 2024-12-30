@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:piece_autos/core/services/enums.dart';
-import 'package:piece_autos/src/domain/entities/car_model.dart';
 
 abstract class Item extends Equatable {
   final String id;

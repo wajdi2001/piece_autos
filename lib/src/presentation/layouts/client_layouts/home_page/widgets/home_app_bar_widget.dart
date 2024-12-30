@@ -193,6 +193,7 @@ class HomeAppBarWidget extends StatelessWidget {
               const SizedBox(height: 10),
               // Search Section
               if (ResponsiveBreakpoints.of(context).isDesktop)
+
                 Container(
                   width: 300,
                   decoration: BoxDecoration(

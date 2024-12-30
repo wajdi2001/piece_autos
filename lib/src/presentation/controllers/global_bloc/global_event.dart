@@ -58,4 +58,9 @@ class GlobalGetAllItemsEvent extends GlobalEvent {
 
   
 }
+class GlobalSwitchSearchBarEvent extends GlobalEvent 
+{
+  final bool show;
+  const GlobalSwitchSearchBarEvent({required this.show});
+}
 

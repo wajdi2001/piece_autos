@@ -31,11 +31,15 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalGetAllBrandsEvent>(_onGetAllBrandsEvent);
     on<GlobalGetAllCarModelEvent>(_onGetAllCarModelEvent);
     on<GlobalSelectBrandEvent>(_onSelectBrand);
+    on<GlobalSelectCarModelEvent>(_onSelectCarModel);
+    on<GlobalGetAllTagsEvent>(_onGetAllTagsEvent);
+    on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
+    on<GlobalSwitchSearchBarEvent>(_onSwitchSearchBarEvent);
+
  
     on<GlobalDeleteBrandEvent>(_onDeleteBrandModel);
-on<GlobalSelectCarModelEvent>(_onSelectCarModel);
-on<GlobalGetAllTagsEvent>(_onGetAllTagsEvent);
-on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
+
+
 
 
   }
@@ -60,6 +64,7 @@ on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
     res.fold(
       (failure) => emit(state.copyWith(isBrandsLoading: false)),
       (brands) => emit(state.copyWith(
+
         status: GlobalStatus.loaded,
         isBrandsLoading: false,
         brands: brands
@@ -146,7 +151,25 @@ on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
       },
     );
   }
-  
+
+  void _onSelectCarModel(
+      GlobalSelectCarModelEvent event, Emitter<GlobalState> emit) {
+    emit(state.copyWith(
+      isYearsLoading: true,
+    ));
+    final selectedCarModel = state.carModels.firstWhere(
+      (carModel) => carModel.id == event.carModelId,
+      orElse: () => throw Exception("Car model not found"),
+    );
+
+    emit(state.copyWith(
+      isYearsLoading: false,
+      selectedCarModelId: event.carModelId,
+      selectedYearOfConstruction: selectedCarModel.yearOfConstruction,
+    ));
+  }
+
+
 
 
   void _onDeleteBrandModel(
@@ -231,60 +254,63 @@ void _onGetAllTagsEvent(
     }
   }
 
-
   void _onGetAllItemsEvent(
-    GlobalGetAllItemsEvent event, Emitter<GlobalState> emit) async {
-  final getAllItemsUseCase = sl<GetAllItemsUseCase>();
+      GlobalGetAllItemsEvent event, Emitter<GlobalState> emit) async {
+    final getAllItemsUseCase = sl<GetAllItemsUseCase>();
 
-  try {
-    // Emit loading state
-    emit(state.copyWith(status: GlobalStatus.loading));
+    try {
+      // Emit loading state
+      emit(state.copyWith(status: GlobalStatus.loading));
 
-    // Ensure query is not null, pass empty map if null
-    final query = event.query ?? {};
+      // Ensure query is not null, pass empty map if null
+      final query = event.query ?? {};
 
-    // Fetch data using the use case
-    final res = await getAllItemsUseCase(query);
+      // Fetch data using the use case
+      final res = await getAllItemsUseCase(query);
 
-    // Handle the result using fold
-    res.fold(
-      (failure) {
-        // Emit failure state
-        emit(state.copyWith(
-          status: GlobalStatus.error,
-          errorMessage: failure.message,
-        ));
-      },
-      (items) {
-        // Emit success state with transformed items
-        emit(state.copyWith(
-          status: GlobalStatus.loaded,
-          items: items.map((e) {
-            return ItemModel(
-              id: e.id,
-              name: e.name,
-              description: e.description,
-              images: e.images,
-              brandId: e.brandId,
-              hasDiscount: e.hasDiscount,
-              price: e.price,
-              quantity: e.quantity,
-              ref: e.ref,
-              status: e.status,
-              tvaId: e.tvaId,
-              tags: e.tags,
-
-            );
-          }).toList(),
-        ));
-      },
-    );
-  } catch (e) {
-    // Catch unexpected errors and emit error state
-    emit(state.copyWith(
-      status: GlobalStatus.error,
-      errorMessage: e.toString(),
-    ));
+      // Handle the result using fold
+      res.fold(
+        (failure) {
+          // Emit failure state
+          emit(state.copyWith(
+            status: GlobalStatus.error,
+            errorMessage: failure.message,
+          ));
+        },
+        (items) {
+          // Emit success state with transformed items
+          emit(state.copyWith(
+            status: GlobalStatus.loaded,
+            items: items.map((e) {
+              return ItemModel(
+                id: e.id,
+                name: e.name,
+                description: e.description,
+                images: e.images,
+                brandId: e.brandId,
+                hasDiscount: e.hasDiscount,
+                price: e.price,
+                quantity: e.quantity,
+                ref: e.ref,
+                status: e.status,
+                tvaId: e.tvaId,
+                tags: e.tags,
+              );
+            }).toList(),
+          ));
+        },
+      );
+    } catch (e) {
+      // Catch unexpected errors and emit error state
+      emit(state.copyWith(
+        status: GlobalStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
   }
-}
+
+  void _onSwitchSearchBarEvent(
+      GlobalSwitchSearchBarEvent event, Emitter<GlobalState> emit) {
+    emit(state.copyWith(isOpenedSearch: event.show));
+  }
 }
