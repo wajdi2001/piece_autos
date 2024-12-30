@@ -191,23 +191,6 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   }
 
        
-void _onSelectCarModel(GlobalSelectCarModelEvent event, Emitter<GlobalState> emit) {
-  emit(state.copyWith(
-    isYearsLoading: true,
-    
-    
-  ));
-  final selectedCarModel = state.carModels.firstWhere(
-    (carModel) => carModel.id == event.carModelId,
-    orElse: () => throw Exception("Car model not found"),
-  );
-
-  emit(state.copyWith(
-    isYearsLoading: false,
-    selectedCarModelId: event.carModelId,
-    selectedYearOfConstruction: selectedCarModel.yearOfConstruction,
-  ));
-}
 void _onGetAllTagsEvent(
       GlobalGetAllTagsEvent event, Emitter<GlobalState> emit) async {
     final getAllTagsUseCase = sl<GetAllTagsUseCase>();
