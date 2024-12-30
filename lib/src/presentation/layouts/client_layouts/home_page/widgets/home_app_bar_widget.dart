@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
+import 'package:piece_autos/src/presentation/shared/router/app_router.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class HomeAppBarWidget extends StatelessWidget {
@@ -44,11 +46,12 @@ class HomeAppBarWidget extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 3,
-                        child: Container
-                        (
+                        child: Container(
                           decoration: BoxDecoration(
-                            image: DecorationImage(image: AssetImage('assets/images/pieceAutoLogo.png'),fit: BoxFit.scaleDown  )
-                          ),
+                              image: DecorationImage(
+                                  image: AssetImage(
+                                      'assets/images/pieceAutoLogo.png'),
+                                  fit: BoxFit.scaleDown)),
                         ),
                       ),
                       Expanded(
@@ -69,6 +72,15 @@ class HomeAppBarWidget extends StatelessWidget {
                           style: _menuItemStyle(),
                         ),
                       ),
+                      Expanded(
+                        child: GestureDetector(
+                            onTap: () =>
+                                context.go(AppRouter.adminDashboardRoute),
+                            child: Icon(
+                              Icons.admin_panel_settings,
+                              size: 20,
+                            )),
+                      )
                     ],
                   )
                 : Row(
@@ -79,15 +91,17 @@ class HomeAppBarWidget extends StatelessWidget {
                         },
                         icon: const Icon(Icons.menu, color: Colors.white),
                       ),
-                      
-                      Container
-                        (
-                          height: 50,
-                          width: 75,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(image: AssetImage('assets/images/pieceAutoLogo.png',),fit: BoxFit.contain,)
+                      Container(
+                        height: 50,
+                        width: 75,
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                          image: AssetImage(
+                            'assets/images/pieceAutoLogo.png',
                           ),
-                        ),
+                          fit: BoxFit.contain,
+                        )),
+                      ),
                     ],
                   ),
           ),

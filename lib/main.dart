@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/src/data/datasources/remote/auth_remote_data_source/auth_remote_data_source.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
 import 'core/services/injection_container.dart';
@@ -9,11 +13,19 @@ import 'package:piece_autos/core/services/injection_container.dart' as di;
 
 import 'src/presentation/shared/router/app_router.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
-   di.init();
-   
+  di.init();
+  if (kDebugMode) {
+    try {
+      final authRemoteDataSource = sl<AuthRemoteDataSource>();
+      await authRemoteDataSource
+          .signIn({"email": "Admin@gmail.com", "password": "Admin123@"});
+    } catch (e) {
+      log("Failed To sign in ${e.toString()}");
+    }
+  }
   runApp(const MyApp());
 }
 
@@ -41,11 +53,9 @@ class MyApp extends StatelessWidget {
         child: MaterialApp.router(
           title: 'Flutter Demo',
           theme: themeData,
-          routerConfig:AppRouter.router,
+          routerConfig: AppRouter.router,
         ),
       ),
     );
   }
 }
-
-

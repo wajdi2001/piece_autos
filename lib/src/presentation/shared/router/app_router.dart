@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:piece_autos/src/presentation/layouts/admin_dashboard/admin_layout.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/Item_page/item_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/category_details_page/category_detail_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/home_page.dart';
@@ -18,6 +19,7 @@ class AppRouter {
   static const itemsRoute = '/items';
   static const categorieDetailsRoute = '/category';
   static const productRoute = '/product';
+  static const adminDashboardRoute = '/admin'; // Admin Dashboard Route
 
   AppRouter._();
 
@@ -52,7 +54,6 @@ class AppRouter {
                 path: itemsRoute,
                 builder: (context, state) => ItemPage(
                   onTapCategory: () {
-
                     StatefulNavigationShell.of(context).goBranch(2);
                   },
                 ),
@@ -63,40 +64,38 @@ class AppRouter {
           StatefulShellBranch(
             navigatorKey: _tabNavigatorKey3,
             routes: [
-              // Route par défaut sans paramètres dynamiques
-             /* GoRoute(
-                path: '/category',
-                builder: (context, state) => const Placeholder(), // Une page par défaut
-              ),*/
-              // Route avec paramètres dynamiques
               GoRoute(
-                path: categorieDetailsRoute, // '/item/:title'
+                path: categorieDetailsRoute,
                 builder: (context, state) {
                   return CategoryDetailPage(
-                    onTapItemdetails: () => StatefulNavigationShell.of(context).goBranch(3),
+                    onTapItemdetails: () =>
+                        StatefulNavigationShell.of(context).goBranch(3),
                   );
                 },
               ),
             ],
           ),
-
-
+          // Branch 4: Product Details
           StatefulShellBranch(
             navigatorKey: _tabNavigatorKey4,
             routes: [
               GoRoute(
                 path: productRoute,
-                builder: (context, state) => ProductDetailPage()
+                builder: (context, state) => ProductDetailPage(),
               ),
             ],
           ),
         ],
       ),
+      // Add Admin Dashboard as a standalone route
+      GoRoute(
+        path: adminDashboardRoute,
+        builder: (context, state) => const AdminDashboard(),
+      ),
     ],
     errorBuilder: (context, state) => const ErrorPage(),
   );
 }
-
 
 // Error Page for undefined routes
 class ErrorPage extends StatelessWidget {
