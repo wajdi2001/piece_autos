@@ -64,7 +64,9 @@ class _HomePageState extends State<HomePage> {
           ////////////////////////////////
           
           
-          drawer: HomeDrawer());
+          drawer: HomeDrawer(),
+          drawerEnableOpenDragGesture: true,
+          );
         },
       ),
     );
