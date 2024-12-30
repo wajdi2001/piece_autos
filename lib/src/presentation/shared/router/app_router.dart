@@ -66,6 +66,8 @@ class AppRouter {
                 path: itemsRoute,
                 builder: (context, state) => ItemPage(
 
+                  onTapCategory: () {
+                    
                     StatefulNavigationShell.of(context).goBranch(2);
                   },
                 ),
