@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/core/services/injection_container.dart';
 import 'package:piece_autos/core/utils/constants.dart';
+import 'package:piece_autos/src/data/models/brand_model.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_bloc.dart';
 import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 import 'package:piece_autos/src/presentation/layouts/admin_dashboard/widgets/image_picker_widget.dart';
@@ -141,7 +140,7 @@ class BrandTable extends StatelessWidget {
 }
 
 class BrandFormModal extends StatefulWidget {
-  final dynamic brand; // Pass the brand object for editing, null for adding
+  final BrandModel? brand; // Pass the brand object for editing, null for adding
   const BrandFormModal({super.key, this.brand});
 
   @override
@@ -151,15 +150,23 @@ class BrandFormModal extends StatefulWidget {
 class _BrandFormModalState extends State<BrandFormModal> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  File? _selectedImage;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     if (widget.brand != null) {
       // Pre-fill the form for editing
-      _nameController.text = widget.brand.name;
+      _nameController.text = widget.brand!.name;
     }
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers and focus nodes to avoid memory leaks
+    _nameController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -174,6 +181,7 @@ class _BrandFormModalState extends State<BrandFormModal> {
             children: [
               TextFormField(
                 controller: _nameController,
+                focusNode: _focusNode,
                 decoration: const InputDecoration(labelText: 'Name'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -181,10 +189,8 @@ class _BrandFormModalState extends State<BrandFormModal> {
                   }
                   return null;
                 },
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [ImagePickerWidget()],
+                autofocus:
+                    true, // Automatically focus the field when dialog opens
               ),
             ],
           ),
@@ -199,25 +205,10 @@ class _BrandFormModalState extends State<BrandFormModal> {
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               // Dispatch event to add/update brand
-              // Use _nameController.text and _selectedImage for the data
-              if (widget.brand == null) {
-                // Add new brand
-                // context.read<GlobalBloc>().add(
-                //       GlobalAddBrandEvent(
-                //         name: _nameController.text,
-                //         imageFile: _selectedImage,
-                //       ),
-                //     );
-              } else {
-                // Update existing brand
-                // context.read<GlobalBloc>().add(
-                //       GlobalUpdateBrandEvent(
-                //         brandId: widget.brand.id,
-                //         name: _nameController.text,
-                //         imageFile: _selectedImage,
-                //       ),
-                //     );
-              }
+              context.read<DashboardBloc>().add(DashboardUpsertBrandEvent(
+                    name: _nameController.text,
+                    brandId: widget.brand?.id,
+                  ));
               Navigator.of(context).pop();
             }
           },
