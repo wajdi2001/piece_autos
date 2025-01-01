@@ -3,11 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:piece_autos/core/utils/constants.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_bloc.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_state.dart';
 
 class ImagePickerWidget extends StatelessWidget {
-  const ImagePickerWidget({super.key});
+  final String? defaultNetworkImage;
+  const ImagePickerWidget({
+    super.key,
+    this.defaultNetworkImage,
+  });
 
   Future<void> _pickImage(BuildContext context) async {
     final picker = ImagePicker();
@@ -36,6 +41,13 @@ class ImagePickerWidget extends StatelessWidget {
               child: const Text("Pick an Image"),
             ),
             const SizedBox(height: 16),
+            if (state.selectedImageBytes == null && defaultNetworkImage != null)
+              Image.network(
+                "$baseUrl/$defaultNetworkImage",
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             if (state.selectedImageBytes != null)
               Column(
                 children: [
