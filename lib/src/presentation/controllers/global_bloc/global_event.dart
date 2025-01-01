@@ -36,7 +36,6 @@ class GlobalSelectCarModelEvent extends GlobalEvent {
   GlobalSelectCarModelEvent(this.carModelId);
 }
 
-
 class GlobalDeleteBrandEvent extends GlobalEvent {
   final String brandId;
 
@@ -47,20 +46,27 @@ class GlobalGetAllTagsEvent extends GlobalEvent {
   final DataMap? query;
 
   const GlobalGetAllTagsEvent({this.query});
-
-  
 }
 
 class GlobalGetAllItemsEvent extends GlobalEvent {
   final DataMap? query;
 
   const GlobalGetAllItemsEvent({this.query});
-
-  
 }
-class GlobalSwitchSearchBarEvent extends GlobalEvent 
-{
+
+class GlobalSwitchSearchBarEvent extends GlobalEvent {
   final bool show;
   const GlobalSwitchSearchBarEvent({required this.show});
 }
 
+class GlobalCreateOrUpdateBrandEvent extends GlobalEvent {
+  final String id;
+  final String name;
+  final String? imageUrl;
+
+  GlobalCreateOrUpdateBrandEvent({
+    required this.id,
+    required this.name,
+    required this.imageUrl,
+  });
+}

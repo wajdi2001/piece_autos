@@ -19,18 +19,21 @@ class APIFailure extends Failure {
   APIFailure.fromException(APIException exception)
       : this(message: exception.message, statusCode: exception.statusCode);
 }
+
 class LocalFailure extends Failure {
-  const LocalFailure({required super.message,  super.statusCode = 0});
+  const LocalFailure({required super.message, super.statusCode = 0});
 
   LocalFailure.fromException(LocalException exception)
       : this(message: exception.message, statusCode: 0);
 }
 
-
-
 class ServerFailure extends Failure {
-  const ServerFailure({required super.message,  super.statusCode=500});
+  const ServerFailure({required super.message, super.statusCode = 500});
 
   ServerFailure.fromException(APIException exception)
       : this(message: exception.message);
+}
+
+class ValidationFailure extends Failure {
+  const ValidationFailure({required super.message, super.statusCode = 400});
 }
