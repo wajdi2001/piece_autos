@@ -8,6 +8,7 @@ import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
 import 'package:piece_autos/src/presentation/shared/library/searchble_drop_down/searchable_paginated_dropdown.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../../../../../core/utils/cache_helper.dart';
 import '../../../../controllers/global_bloc/global_bloc.dart';
 
 class CustomBodyWidget extends StatelessWidget {
@@ -114,13 +115,20 @@ Widget _buildDropdownSection(BuildContext context,
       // Brand Dropdown
       BlocBuilder<GlobalBloc, GlobalState>(
         builder: (context, state) {
-          return state.isBrandsLoading
+          List<BrandModel> retrievedBrands = CacheHelper.getObjectList(
+  key: 'brands',
+  fromJson: (jsonString) => BrandModel.fromJson1(jsonString),
+) ?? []; // Fallback to an empty list if null
+
+String selectedBrandId = CacheHelper.getData(key: "selectedBrandId") ?? '';
+
+          return state.isBrandsLoading && retrievedBrands.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : _buildSearchableDropdown(
                   enabled: true,
-                  hint: state.selectedBrandId != null
-                      ? state.brands
-                          .firstWhere((e) => e.id == state.selectedBrandId)
+                  hint: state.selectedBrandId != null || selectedBrandId.isNotEmpty
+                      ? retrievedBrands
+                          .firstWhere((e) => e.id == selectedBrandId)
                           .name
                       : "Choisir la marque",
                   searchHint: "Saisir la marque",
@@ -136,13 +144,20 @@ Widget _buildDropdownSection(BuildContext context,
       // Car Model Dropdown
       BlocBuilder<GlobalBloc, GlobalState>(
         builder: (context, state) {
-          return state.isCarModelsLoading
+          List<CarModelModel> retrievedItems = CacheHelper.getObjectList(
+        key: 'carModels',
+        fromJson: (jsonString) => CarModelModel.fromJson1(jsonString),
+      )??[];
+      String selectedCarModelId =CacheHelper.getData(key: "selectedCarModelId")??'';
+      String selectedBrandId =CacheHelper.getData(key: "selectedBrandId")??'';
+
+          return state.isCarModelsLoading && retrievedItems.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : _buildSearchableDropdown(
-                  enabled: state.selectedBrandId != null,
-                  hint: state.selectedCarModelId != null
-                      ? state.carModels
-                          .firstWhere((e) => e.id == state.selectedCarModelId)
+                  enabled: selectedBrandId.isNotEmpty,
+                  hint: state.selectedCarModelId != null|| selectedCarModelId.isNotEmpty
+                      ? retrievedItems
+                          .firstWhere((e) => e.id == selectedCarModelId)
                           .name
                       : "Choisir le modèle",
                   searchHint: "Saisir le modèle",
