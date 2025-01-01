@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:piece_autos/core/utils/cache_helper.dart';
+import 'package:piece_autos/src/data/models/item_model.dart';
 import 'package:piece_autos/src/presentation/layouts/admin_dashboard/admin_layout.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/Item_page/item_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/category_details_page/category_detail_page.dart';
@@ -45,12 +47,12 @@ class AppRouter {
                   builder: (context, state) {
                     return CustomBodyWidget(
                       onPressed: () {
-                        if(state.selectedYearOfConstruction!=null)
-                        {
-                          context.read<GlobalBloc>().add(GlobalGetAllTagsEvent());
+                        if (state.selectedYearOfConstruction != null) {
+                          context
+                              .read<GlobalBloc>()
+                              .add(GlobalGetAllTagsEvent());
                           StatefulNavigationShell.of(context).goBranch(1);
                         }
-                        
                       },
                     );
                   },
@@ -65,9 +67,7 @@ class AppRouter {
               GoRoute(
                 path: itemsRoute,
                 builder: (context, state) => ItemPage(
-
                   onTapCategory: () {
-                    
                     StatefulNavigationShell.of(context).goBranch(2);
                   },
                 ),
@@ -78,7 +78,6 @@ class AppRouter {
           StatefulShellBranch(
             navigatorKey: _tabNavigatorKey3,
             routes: [
-
               GoRoute(
                 path: categorieDetailsRoute,
                 builder: (context, state) {
@@ -95,10 +94,19 @@ class AppRouter {
             navigatorKey: _tabNavigatorKey4,
             routes: [
               GoRoute(
-
                   path: productRoute,
-                  builder: (context, state) => ProductDetailPage()),
-
+                  builder: (context, state) =>
+                      BlocBuilder<GlobalBloc, GlobalState>(
+                        builder: (context, state) {
+                          String id =CacheHelper.getData(key: "selectedItemModelId");
+                          List<ItemModel> retrievedItems = CacheHelper.getObjectList(
+  key: 'items',
+  fromJson: (jsonString) => ItemModel.fromJson1(jsonString),
+);
+                           ItemModel itemModel = retrievedItems.where((e)=>e.id==id).first ;
+                          return ProductDetailPage(itemModel: itemModel,);
+                        },
+                      )),
             ],
           ),
         ],

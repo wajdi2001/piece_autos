@@ -2,9 +2,11 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/core/utils/cache_helper.dart';
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
 import 'package:piece_autos/src/data/models/car_model_model.dart';
+import 'package:piece_autos/src/data/models/order_item_model.dart';
 
 import 'package:piece_autos/src/domain/usecases/brand_use_cases/delete_brand.dart';
 
@@ -36,12 +38,11 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
     on<GlobalSwitchSearchBarEvent>(_onSwitchSearchBarEvent);
 
- 
     on<GlobalDeleteBrandEvent>(_onDeleteBrandModel);
-
-
-
-
+    on<GlobalSelectItemEvent>(_onSelectItemEvent);
+    on<GlobalGetAllItemsAndTagsFromCacheEvent>(
+        _onGetAllItemsAndTagsFromCacheEvent);
+        on<GlobalAddToShoppingCartEvent>(_onAddToShoppingCartEvent);
   }
 
   void _onNavigatorEvent(
@@ -63,14 +64,19 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
 
     res.fold(
       (failure) => emit(state.copyWith(isBrandsLoading: false)),
-      (brands) => emit(state.copyWith(
+      (brands) {
+        List<BrandModel>brandsModel=brands
+            .map((e) => BrandModel(id: e.id, image: e.image, name: e.name))
+            .toList();
 
+      CacheHelper.saveObjectList(
+              key: "brands", toJson: (p0) => p0.toJson1(), value: brandsModel);
+emit(state.copyWith(
         status: GlobalStatus.loaded,
         isBrandsLoading: false,
-        brands: brands
-            .map((e) => BrandModel(id: e.id, image: e.image, name: e.name))
-            .toList(),
-      )),
+        brands:brandsModel,
+      ));
+      } ,
     );
   }
 
@@ -95,17 +101,22 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
           ));
         },
         (carModels) {
-          // Emit success state with transformed car models
-          emit(state.copyWith(
-            status: GlobalStatus.loaded,
-            carModels: carModels.map((e) {
+
+          List<CarModelModel>carModelsModels=carModels.map((e) {
               return CarModelModel(
                 id: e.id,
                 name: e.name,
                 brandId: e.brandId,
                 yearOfConstruction: e.yearOfConstruction,
               );
-            }).toList(),
+            }).toList();
+
+      CacheHelper.saveObjectList(
+              key: "carModels", toJson: (p0) => p0.toJson1(), value: carModelsModels);
+          // Emit success state with transformed car models
+          emit(state.copyWith(
+            status: GlobalStatus.loaded,
+            carModels: carModelsModels,
           ));
         },
       );
@@ -137,16 +148,20 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
         emit(state.copyWith(isCarModelsLoading: false));
       },
       (carModels) {
+        List<CarModelModel>carModelsModels=carModels.map((e) {
+              return CarModelModel(
+                id: e.id,
+                name: e.name,
+                brandId: e.brandId,
+                yearOfConstruction: e.yearOfConstruction,
+              );
+            }).toList();
+
+      CacheHelper.saveObjectList(
+              key: "carModels", toJson: (p0) => p0.toJson1(), value: carModelsModels);
         emit(state.copyWith(
           isCarModelsLoading: false,
-          carModels: carModels
-              .map((e) => CarModelModel(
-                    id: e.id,
-                    name: e.name,
-                    brandId: e.brandId,
-                    yearOfConstruction: e.yearOfConstruction,
-                  ))
-              .toList(),
+          carModels: carModelsModels,
         ));
       },
     );
@@ -169,9 +184,6 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     ));
   }
 
-
-
-
   void _onDeleteBrandModel(
       GlobalDeleteBrandEvent event, Emitter<GlobalState> emit) async {
     final deleteBrandUserCase = sl<DeleteBrandUseCase>();
@@ -190,8 +202,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     });
   }
 
-       
-void _onGetAllTagsEvent(
+  void _onGetAllTagsEvent(
       GlobalGetAllTagsEvent event, Emitter<GlobalState> emit) async {
     final getAllTagsUseCase = sl<GetAllTagsUseCase>();
 
@@ -215,16 +226,20 @@ void _onGetAllTagsEvent(
           ));
         },
         (tags) {
+          List<TagModel> tagsModel = tags.map((e) {
+            return TagModel(
+              id: e.id,
+              name: e.name,
+              imageUrl: e.imageUrl,
+            );
+          }).toList();
+          CacheHelper.saveObjectList(
+              key: "tags", toJson: (p0) => p0.toJson1(), value: tagsModel);
+
           // Emit success state with transformed tags
           emit(state.copyWith(
             status: GlobalStatus.loaded,
-            tags: tags.map((e) {
-              return TagModel(
-                id: e.id,
-                name: e.name,
-                imageUrl: e.imageUrl,
-              );
-            }).toList(),
+            tags: tagsModel,
           ));
         },
       );
@@ -261,25 +276,28 @@ void _onGetAllTagsEvent(
           ));
         },
         (items) {
+          List<ItemModel> itemsModel = items.map((e) {
+            return ItemModel(
+              id: e.id,
+              name: e.name,
+              description: e.description,
+              images: e.images,
+              brandId: e.brandId,
+              hasDiscount: e.hasDiscount,
+              price: e.price,
+              quantity: e.quantity,
+              ref: e.ref,
+              status: e.status,
+              tvaId: e.tvaId,
+              tags: e.tags,
+            );
+          }).toList();
+          CacheHelper.saveObjectList(
+              key: "items", toJson: (p0) => p0.toJson1(), value: itemsModel);
           // Emit success state with transformed items
           emit(state.copyWith(
             status: GlobalStatus.loaded,
-            items: items.map((e) {
-              return ItemModel(
-                id: e.id,
-                name: e.name,
-                description: e.description,
-                images: e.images,
-                brandId: e.brandId,
-                hasDiscount: e.hasDiscount,
-                price: e.price,
-                quantity: e.quantity,
-                ref: e.ref,
-                status: e.status,
-                tvaId: e.tvaId,
-                tags: e.tags,
-              );
-            }).toList(),
+            items: itemsModel,
           ));
         },
       );
@@ -296,4 +314,49 @@ void _onGetAllTagsEvent(
       GlobalSwitchSearchBarEvent event, Emitter<GlobalState> emit) {
     emit(state.copyWith(isOpenedSearch: event.show));
   }
+
+  void _onSelectItemEvent(
+      GlobalSelectItemEvent event, Emitter<GlobalState> emit) {
+    CacheHelper.saveData(key: 'selectedItemModelId', value: event.itemId);
+    emit(state.copyWith(selectedItemModelId: event.itemId));
+  }
+
+  void _onGetAllItemsAndTagsFromCacheEvent(
+      GlobalGetAllItemsAndTagsFromCacheEvent event,
+      Emitter<GlobalState> emit) async {
+    emit(state.copyWith(status: GlobalStatus.loading)); // Emit loading state
+
+    try {
+      // Fetch items and tags from cache
+      List<TagModel> tags = (await CacheHelper.getData(key: 'tags') as List)
+          .map((tag) => TagModel.fromJson(tag))
+          .toList();
+
+      List<ItemModel> retrievedItems = CacheHelper.getObjectList(
+        key: 'items',
+        fromJson: (jsonString) => ItemModel.fromJson1(jsonString),
+      );
+
+      // Emit success state with updated items and tags
+      emit(state.copyWith(
+        status: GlobalStatus.loaded,
+        items: retrievedItems,
+        tags: tags,
+      ));
+    } catch (e) {
+      // Emit error state on failure
+      emit(state.copyWith(
+        status: GlobalStatus.error,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  void _onAddToShoppingCartEvent(
+      GlobalAddToShoppingCartEvent event,
+      Emitter<GlobalState> emit) async {
+    final List<OrderItemModel > newList=List.from(state.shoppingCart);
+    newList.add(event.item);
+    emit(state.copyWith(shoppingCart: newList));
+}
 }

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/services/enums.dart';
+import 'package:piece_autos/src/data/models/tag_model.dart';
 
 import 'package:piece_autos/src/presentation/layouts/client_layouts/Item_page/widgets/custom_item_widget.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -17,7 +18,29 @@ class ItemPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        final categories = state.tags;
+        List<TagModel> categories = [];
+
+        // Handle different states
+        if (state.status == GlobalStatus.loaded) {
+          categories = state.tags;
+
+          // If items are empty, fetch from cache
+          if (categories.isEmpty) {
+            context.read<GlobalBloc>().add(GlobalGetAllItemsAndTagsFromCacheEvent());
+          }
+        }
+
+        if (state.status == GlobalStatus.loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        if (state.status == GlobalStatus.error || categories.isEmpty) {
+          return const Center(
+            child: Text("No tags available. Please try again later."),
+          );
+        }
         return state.status==GlobalStatus.loading? CircularProgressIndicator(): Container(
           height: categories.length * 100,
           width: double.infinity,
