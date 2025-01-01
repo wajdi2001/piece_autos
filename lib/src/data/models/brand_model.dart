@@ -4,8 +4,7 @@ import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/brand.dart';
 
 class BrandModel extends Brand {
-  const BrandModel(
-      {required super.id, required super.name, required super.image});
+  const BrandModel({required super.id, required super.name, super.image});
 
   BrandModel copyWith({
     String? id,
@@ -18,7 +17,8 @@ class BrandModel extends Brand {
       image: image ?? super.image,
     );
   }
-  factory   BrandModel.fromJson(DataMap json) {
+
+  factory BrandModel.fromJson(DataMap json) {
     return BrandModel(
       id: json['id'],
       name: json['name'],

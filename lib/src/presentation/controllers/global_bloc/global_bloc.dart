@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -37,12 +38,16 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalGetAllTagsEvent>(_onGetAllTagsEvent);
     on<GlobalGetAllItemsEvent>(_onGetAllItemsEvent);
     on<GlobalSwitchSearchBarEvent>(_onSwitchSearchBarEvent);
+    on<GlobalCreateOrUpdateBrandEvent>(
+      onCreateOrUpdateBrandEvent,
+    );
 
     on<GlobalDeleteBrandEvent>(_onDeleteBrandModel);
     on<GlobalSelectItemEvent>(_onSelectItemEvent);
     on<GlobalGetAllItemsAndTagsFromCacheEvent>(
         _onGetAllItemsAndTagsFromCacheEvent);
         on<GlobalAddToShoppingCartEvent>(_onAddToShoppingCartEvent);
+
   }
 
   void _onNavigatorEvent(
@@ -72,6 +77,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
       CacheHelper.saveObjectList(
               key: "brands", toJson: (p0) => p0.toJson1(), value: brandsModel);
 emit(state.copyWith(
+
         status: GlobalStatus.loaded,
         isBrandsLoading: false,
         brands:brandsModel,
@@ -359,4 +365,25 @@ emit(state.copyWith(
     newList.add(event.item);
     emit(state.copyWith(shoppingCart: newList));
 }
+
+  FutureOr<void> onCreateOrUpdateBrandEvent(
+      GlobalCreateOrUpdateBrandEvent event, emit) async {
+    emit(state.copyWith(status: GlobalStatus.loading));
+    final indexOfBrandModel =
+        state.brands.indexWhere((elt) => elt.id == event.id);
+    if (indexOfBrandModel != -1) {
+      BrandModel relatedBrand = state.brands[indexOfBrandModel];
+      relatedBrand =
+          relatedBrand.copyWith(name: event.name, image: event.imageUrl);
+      final updatedList = List<BrandModel>.from(state.brands);
+      updatedList[indexOfBrandModel] = relatedBrand;
+      emit(state.copyWith(status: GlobalStatus.loaded, brands: updatedList));
+    } else {
+      var brandModel =
+          BrandModel(id: event.id, name: event.name, image: event.imageUrl);
+      final updatedList = List<BrandModel>.from(state.brands);
+      updatedList.add(brandModel);
+      emit(state.copyWith(status: GlobalStatus.loaded, brands: updatedList));
+    }
+  }
 }

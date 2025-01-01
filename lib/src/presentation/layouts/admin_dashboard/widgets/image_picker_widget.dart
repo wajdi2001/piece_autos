@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,10 +19,9 @@ class ImagePickerWidget extends StatelessWidget {
     if (pickedFile != null) {
       // Dispatch the event with the selected image file
       // ignore: use_build_context_synchronously
-      context.read<DashboardBloc>().add(
-            DashboardSelectImageEvent(
-                imageBytes: await pickedFile.readAsBytes()),
-          );
+      context
+          .read<DashboardBloc>()
+          .add(DashboardSelectImageEvent(imageFile: File(pickedFile.path)));
     }
   }
 
@@ -35,13 +36,13 @@ class ImagePickerWidget extends StatelessWidget {
               child: const Text("Pick an Image"),
             ),
             const SizedBox(height: 16),
-            if (state.selectedImage != null)
+            if (state.selectedImageBytes != null)
               Column(
                 children: [
                   const Text("Selected Image:"),
                   const SizedBox(height: 8),
                   Image.memory(
-                    state.selectedImage!,
+                    state.selectedImageBytes!,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,

@@ -48,7 +48,7 @@ void init() async {
   /// Global Bloc
   sl.registerLazySingleton<GlobalBloc>(() => GlobalBloc());
 
-  sl.registerLazySingleton<DashboardBloc>(() => DashboardBloc());
+  sl.registerLazySingleton<DashboardBloc>(() => DashboardBloc(sl()));
 
   /// Auth
   // Data sources
@@ -102,28 +102,29 @@ void init() async {
   sl.registerLazySingleton<GetAllCarModelsUseCase>(
       () => GetAllCarModelsUseCase(repository: sl()));
 
-  sl.registerLazySingleton(() => CreateOrUpdateCarModelUseCase(repository:  sl()));
-  sl.registerLazySingleton(() => DeleteCarModelUseCase(repository:  sl()));
-
+  sl.registerLazySingleton(
+      () => CreateOrUpdateCarModelUseCase(repository: sl()));
+  sl.registerLazySingleton(() => DeleteCarModelUseCase(repository: sl()));
 
   //tag
   // Data sources
-  sl.registerLazySingleton<TagRemoteDataSource>(() => TagRemoteDataSourceImpl());
+  sl.registerLazySingleton<TagRemoteDataSource>(
+      () => TagRemoteDataSourceImpl());
   // Repositories
   sl.registerLazySingleton<TagRepository>(() => TagRepositoryImpl(sl()));
   // Use Cases
-  sl.registerLazySingleton(() => GetAllTagsUseCase(repository:  sl()));
+  sl.registerLazySingleton(() => GetAllTagsUseCase(repository: sl()));
   sl.registerLazySingleton(() => CreateOrUpdateTagUseCase(repository: sl()));
   sl.registerLazySingleton(() => DeleteTagUseCase(repository: sl()));
 
-
   //item
   // Data sources
-   sl.registerLazySingleton<ItemRemoteDataSource>(() => ItemRemoteDataSourceImpl());
+  sl.registerLazySingleton<ItemRemoteDataSource>(
+      () => ItemRemoteDataSourceImpl());
   // // Repositories
-   sl.registerLazySingleton<ItemRepository>(() => ItemRepositoryImpl(sl()));
+  sl.registerLazySingleton<ItemRepository>(() => ItemRepositoryImpl(sl()));
   // // Use Cases
-    sl.registerLazySingleton(() => GetAllItemsUseCase(repository: sl()));
+  sl.registerLazySingleton(() => GetAllItemsUseCase(repository: sl()));
   // // sl.registerLazySingleton(() => CreateOrUpdateItemUseCase(repository: sl()));
-  // // sl.registerLazySingleton(() => DeleteItemUseCase(repository: sl()));  
+  // // sl.registerLazySingleton(() => DeleteItemUseCase(repository: sl()));
 }
