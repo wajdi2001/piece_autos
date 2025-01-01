@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/src/domain/entities/item.dart';
 
@@ -35,7 +37,7 @@ class ItemModel extends Item {
       quantity: json['quantity'] ?? 0,
       availableIn: json['availableIn'],
       tvaId: json['tvaRate'].toString(),
-      adaptableCarModels:List<String>.from(json['adaptableWith'] ?? []), 
+      adaptableCarModels: List<String>.from(json['adaptableWith'] ?? []),
       description: (json['description'] as Map<String, dynamic>?)
           ?.map((key, value) => MapEntry(key, value.toString())),
       tags: List<String>.from(json['tags'] ?? []),
@@ -61,5 +63,48 @@ class ItemModel extends Item {
       'description': description,
       'tags': tags,
     };
+  }
+
+  // Convert an ItemModel to JSON
+  String toJson1() {
+    return jsonEncode({
+      'id': id,
+      'name': name,
+      'imagesUrl': images,
+      'brandId': brandId,
+      'ref': ref,
+      'price': price,
+      'hasDiscount': hasDiscount,
+      'discountPercentage': discountPercentage,
+      'itemStatus': status.index,
+      'quantity': quantity,
+      'availableIn': availableIn,
+      'tvaRate': tvaId,
+      'adaptableWith': adaptableCarModels,
+      'description': description,
+      'tags': tags,
+    });
+  }
+
+  factory ItemModel.fromJson1(String jsonString) {
+    final json = jsonDecode(jsonString);
+    return ItemModel(
+      id: json['id'],
+      name: json['name'],
+      images: List<String>.from(json['imagesUrl'] ?? []),
+      brandId: json['brandId'],
+      ref: json['ref'],
+      price: json['price'].toDouble(),
+      hasDiscount: json['hasDiscount'],
+      discountPercentage: json['discountPercentage']?.toDouble(),
+      status: ItemStatus.values[json['itemStatus']],
+      quantity: json['quantity'] ?? 0,
+      availableIn: json['availableIn'],
+      tvaId: json['tvaRate'].toString(),
+      adaptableCarModels: List<String>.from(json['adaptableWith'] ?? []),
+      description: (json['description'] as Map<String, dynamic>?)
+          ?.map((key, value) => MapEntry(key, value.toString())),
+      tags: List<String>.from(json['tags'] ?? []),
+    );
   }
 }

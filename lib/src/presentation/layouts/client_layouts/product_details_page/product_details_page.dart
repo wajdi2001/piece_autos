@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:piece_autos/src/data/models/item_model.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/product_details_page/widgets/custom_product_caractristque_widget.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/product_details_page/widgets/custom_product_image_thumbnail_widget.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/product_details_page/widgets/custom_product_price.dart';
@@ -7,7 +8,8 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'widgets/custom_product_description.dart';
 
 class ProductDetailPage extends StatelessWidget {
-  const ProductDetailPage({super.key});
+  final ItemModel itemModel;
+  const ProductDetailPage({super.key,required this.itemModel});
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +47,8 @@ class ProductDetailPage extends StatelessWidget {
                       color: Colors.grey.shade50,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Text(
-                        "Suspension, bras de liaison",
+                    child:  Text(
+                        itemModel.name,
                         style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -76,13 +78,13 @@ class ProductDetailPage extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: 
-                          CustomProductImageThumbnailWidget(),
+                          CustomProductImageThumbnailWidget(images: itemModel.images,),
                           ),
                           if(ResponsiveBreakpoints.of(context).isDesktop)
                           Expanded(
-                            flex: 1,
+                            flex: 2,
                             child: 
-                          CustomProductCaractristqueWidget(),
+                          CustomProductCaractristqueWidget(itemModel: itemModel,),
                           )
                         ],
                       ),
@@ -93,7 +95,7 @@ class ProductDetailPage extends StatelessWidget {
                   ///desktop Price Display
                   if(ResponsiveBreakpoints.of(context).isDesktop)
                   Expanded(child: 
-                   CustomProductPrice(),
+                   CustomProductPrice(itemModel: itemModel,),
               )
                 ],
               ),
@@ -103,7 +105,7 @@ class ProductDetailPage extends StatelessWidget {
                   Expanded(
                     flex: 1,
                     child: 
-                   CustomProductPrice(),
+                   CustomProductPrice(itemModel: itemModel,),
               ),
 
             // Price and Stock Information

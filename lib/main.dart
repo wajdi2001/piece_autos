@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/core/utils/cache_helper.dart';
 import 'package:piece_autos/src/data/datasources/remote/auth_remote_data_source/auth_remote_data_source.dart';
 
 import 'package:responsive_framework/responsive_framework.dart';
@@ -17,6 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
   di.init();
+  CacheHelper.init();
   if (kDebugMode) {
     try {
       final authRemoteDataSource = sl<AuthRemoteDataSource>();

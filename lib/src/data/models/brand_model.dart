@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/brand.dart';
 
@@ -29,5 +31,22 @@ class BrandModel extends Brand {
       'name': name,
       'imageUrl': image,
     };
+  }
+
+    String toJson1() {
+    return jsonEncode({
+      'id': id,
+      'name': name,
+      'imageUrl': image,
+    });
+  }
+
+  factory BrandModel.fromJson1(String jsonString) {
+    final json = jsonDecode(jsonString);
+    return BrandModel(
+      id: json['id'],
+      name: json['name'],
+      image: json['imageUrl'],
+    );
   }
 }

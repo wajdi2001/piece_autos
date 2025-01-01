@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/core/services/enums.dart';
+import 'package:piece_autos/src/data/models/order_item_model.dart';
+import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/product_details_page/widgets/category_chip.dart';
 
+import '../../../../../data/models/item_model.dart';
+
 class CustomProductPrice extends StatelessWidget {
+  final ItemModel itemModel;
   const CustomProductPrice({
     super.key,
+    required this.itemModel,
   });
 
   @override
@@ -28,8 +36,8 @@ class CustomProductPrice extends StatelessWidget {
      Row(
        mainAxisAlignment: MainAxisAlignment.spaceBetween,
        children: [
-         const Text(
-           "22.483 DT",
+          Text(
+           itemModel.price.toString(),
            style: TextStyle(
              fontSize: 24,
              fontWeight: FontWeight.bold,
@@ -43,8 +51,8 @@ class CustomProductPrice extends StatelessWidget {
              color: Colors.green.shade100,
              borderRadius: BorderRadius.circular(20),
            ),
-           child: const Text(
-             "En Stock",
+           child:  Text(
+             itemModel.status ==ItemStatus.available?"En Stock":itemModel.status ==ItemStatus.notAvailable?"Hors Stock": "Soon Stock",
              style: TextStyle(
                color: Colors.green,
                fontWeight: FontWeight.bold,
@@ -54,16 +62,19 @@ class CustomProductPrice extends StatelessWidget {
        ],
      ),
      const SizedBox(height: 16),
-     const Text("Référence: 2250038"),
-     const Text("Fabricant: SASIC"),
-     const Text("EAN: 3660872478573"),
+      Text("Référence: ${itemModel.ref}"),
+      Text("Fabricant: ${itemModel.brandId}"),
+     
      const SizedBox(height: 16),
      Row(
        children: [
          // Add to Cart Button
          Expanded(
            child: ElevatedButton(
-             onPressed: () {},
+             onPressed: () {
+
+              context.read<GlobalBloc>().add(GlobalAddToShoppingCartEvent(item: OrderItemModel(id: "sdxvfbgfngfbrsfvxc", itemId: itemModel.id, quantity: 1)));
+             },
              style: ElevatedButton.styleFrom(
                backgroundColor: Colors.blue,
                padding: const EdgeInsets.symmetric(vertical: 16),

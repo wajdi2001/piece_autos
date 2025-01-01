@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:piece_autos/src/data/models/item_model.dart';
 
 class CustomProductCaractristqueWidget extends StatelessWidget {
+  final ItemModel itemModel;
   const CustomProductCaractristqueWidget({
     super.key,
+    required this.itemModel
   });
 
   @override
   Widget build(BuildContext context) {
+
+    List<String> descriptionKey = itemModel.description!.keys.toList();
+    List<String> descriptionValue = itemModel.description!.values.toList();
     return Container(
       padding: const EdgeInsets.all(16),
       margin: EdgeInsets.symmetric(horizontal: 8),
@@ -18,8 +24,8 @@ class CustomProductCaractristqueWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Suspension, bras de liaison",
+           Text(
+            itemModel.name,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -34,11 +40,18 @@ class CustomProductCaractristqueWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text("• Côté d'assemblage: Essieu avant"),
-          const Text("• Diamètre intérieur (mm): 12"),
-          const Text("• Diamètre extérieur (mm): 36"),
-          const Text(
-              "• Pour numéro OE: Part of 9831626480"), // Example details
+          SizedBox(
+            height: 200,
+            width: 400,
+            child: ListView.builder(
+              itemCount: descriptionKey.length,
+              itemBuilder: (context, index) => Row(
+                children: [
+                  Text(descriptionKey[index],style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text( ' : ${descriptionValue[index]}',style: TextStyle(overflow: TextOverflow.ellipsis),),
+                ],
+              ),),
+          ) // Example details
         ],
       ),
     );

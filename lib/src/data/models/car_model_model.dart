@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/car_model.dart';
 
@@ -42,5 +44,26 @@ class CarModelModel extends CarModel{
       'brandId': brandId,
       'yearOfConstruction': yearOfConstruction,
     };
+  }
+
+
+
+    String toJson1() {
+    return jsonEncode({
+     'id': id,
+      'name': name,
+      'brandId': brandId,
+      'yearOfConstruction': yearOfConstruction,
+    });
+  }
+
+  factory CarModelModel.fromJson1(String jsonString) {
+    final json = jsonDecode(jsonString);
+    return CarModelModel(
+      id: json['id'],
+      name: json['name'],
+      brandId: json['brandId'],
+      yearOfConstruction: json['yearOfConstruction'],
+    );
   }
 }

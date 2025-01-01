@@ -59,6 +59,25 @@ class GlobalSwitchSearchBarEvent extends GlobalEvent {
   const GlobalSwitchSearchBarEvent({required this.show});
 }
 
+class GlobalSelectItemEvent extends GlobalEvent
+{
+  final String itemId;
+  const GlobalSelectItemEvent({required this.itemId});
+}
+
+class GlobalGetAllItemsAndTagsFromCacheEvent extends GlobalEvent
+{
+  const GlobalGetAllItemsAndTagsFromCacheEvent();
+}
+
+
+
+class GlobalAddToShoppingCartEvent extends GlobalEvent
+{
+  final OrderItemModel item;
+  const GlobalAddToShoppingCartEvent({required this.item});
+}
+
 class GlobalCreateOrUpdateBrandEvent extends GlobalEvent {
   final String id;
   final String name;
@@ -70,3 +89,4 @@ class GlobalCreateOrUpdateBrandEvent extends GlobalEvent {
     required this.imageUrl,
   });
 }
+ 

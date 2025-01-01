@@ -80,7 +80,9 @@ class HomeAppBarWidget extends StatelessWidget {
                               IconButton(
                                 icon: const Icon(Icons.shopping_cart,
                                     color: Colors.black),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Scaffold.of(context).openEndDrawer();
+                                },
                               ),
                             ],
                           ),
@@ -139,71 +141,69 @@ class HomeAppBarWidget extends StatelessWidget {
                               ),
                             ],
                           )
-                        : Container(
-                            child: Row(
-                              children: [
-                                Icon(Icons.car_repair),
-                                Expanded(
-                                  child: SearchableDropdown<ItemModel>.future(
-                                    dialogOffset: 0.3,
-                                    futureRequest: () async {
-                                      // Trigger the BLoC event to fetch items
-                                      context
-                                          .read<GlobalBloc>()
-                                          .add(GlobalGetAllItemsEvent());
-
-                                      // Wait for the state to update and return the items
-                                      final state = await context
-                                          .read<GlobalBloc>()
-                                          .stream
-                                          .firstWhere(
-                                            (state) =>
-                                                state.status ==
-                                                GlobalStatus.loaded,
-                                          );
-
-                                      // Map the items to SearchableDropdownMenuItem
-                                      return state.items.map((item) {
-                                        return SearchableDropdownMenuItem<
-                                            ItemModel>(
-                                          label:
-                                              item.name, // Customize item label
-                                          value: item,
-                                          child: Text(item
-                                              .name), // Customize item display
-                                        );
-                                      }).toList();
-                                    },
-                                    hintText:
-                                        const Text("Rechercher une pièce"),
-                                    searchHintText:
-                                        "Entrer la référence ou la pièce",
-                                    onChanged: (ItemModel? selectedItem) {
-                                      // Handle selection
-                                      if (selectedItem != null) {
-                                        print(
-                                            "Selected Item: ${selectedItem.name}");
-                                      }
-                                    },
-                                    noRecordText: const Center(
-                                        child: Text("No items found")),
-                                    trailingIcon:
-                                        const Icon(Icons.arrow_drop_down),
-                                    //trailingClearIcon: const Icon(Icons.clear),
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    context.read<GlobalBloc>().add(
-                                        GlobalSwitchSearchBarEvent(
-                                            show: false));
-                                  },
-                                  icon: const Icon(Icons.close,
-                                      color: Colors.black),
-                                ),
-                              ],
+                        : Row(
+                          children: [
+                            Icon(Icons.car_repair),
+                            Expanded(
+                              child: SearchableDropdown<ItemModel>.future(
+                                dialogOffset: 0.3,
+                                futureRequest: () async {
+                                  // Trigger the BLoC event to fetch items
+                                  context
+                                      .read<GlobalBloc>()
+                                      .add(GlobalGetAllItemsEvent());
+                        
+                                  // Wait for the state to update and return the items
+                                  final state = await context
+                                      .read<GlobalBloc>()
+                                      .stream
+                                      .firstWhere(
+                                        (state) =>
+                                            state.status ==
+                                            GlobalStatus.loaded,
+                                      );
+                        
+                                  // Map the items to SearchableDropdownMenuItem
+                                  return state.items.map((item) {
+                                    return SearchableDropdownMenuItem<
+                                        ItemModel>(
+                                      label:
+                                          item.name, // Customize item label
+                                      value: item,
+                                      child: Text(item
+                                          .name), // Customize item display
+                                    );
+                                  }).toList();
+                                },
+                                hintText:
+                                    const Text("Rechercher une pièce"),
+                                searchHintText:
+                                    "Entrer la référence ou la pièce",
+                                onChanged: (ItemModel? selectedItem) {
+                                  // Handle selection
+                                  if (selectedItem != null) {
+                                    print(
+                                        "Selected Item: ${selectedItem.name}");
+                                  }
+                                },
+                                noRecordText: const Center(
+                                    child: Text("No items found")),
+                                trailingIcon:
+                                    const Icon(Icons.arrow_drop_down),
+                                //trailingClearIcon: const Icon(Icons.clear),
+                              ),
                             ),
-                          ),
+                            IconButton(
+                              onPressed: () {
+                                context.read<GlobalBloc>().add(
+                                    GlobalSwitchSearchBarEvent(
+                                        show: false));
+                              },
+                              icon: const Icon(Icons.close,
+                                  color: Colors.black),
+                            ),
+                          ],
+                        ),
               ),
               const SizedBox(height: 10),
               // Search Section
