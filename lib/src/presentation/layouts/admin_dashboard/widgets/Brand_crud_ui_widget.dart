@@ -193,6 +193,9 @@ class _BrandFormModalState extends State<BrandFormModal> {
                 autofocus:
                     true, // Automatically focus the field when dialog opens
               ),
+              ImagePickerWidget(
+                defaultNetworkImage: widget.brand?.image,
+              ),
             ],
           ),
         ),
