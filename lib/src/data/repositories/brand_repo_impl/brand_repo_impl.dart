@@ -7,6 +7,7 @@ import 'package:piece_autos/core/errors/exceptions.dart';
 import 'package:piece_autos/core/errors/failure.dart';
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
+import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_state.dart';
 
 import '../../../domain/repositories/brand_repo/brand_repo.dart';
 import '../../datasources/remote/brand_remote_data_source/brand_remote_data_source.dart';
@@ -46,27 +47,23 @@ class BrandRepositoryImpl implements BrandRepository {
         "id": params['id'],
         "name": params['name'],
       });
+
       if (params.containsKey("image")) {
-        final file = params['image'] as File;
+        final file = params['image'] as ImageData;
         formData.files.add(
           MapEntry(
             "image",
             MultipartFile.fromBytes(
-              await file.readAsBytes(), // Convert file to bytes
-              filename: file.path
-                  .split('/')
-                  .last, // Extract the filename from the file path
-              contentType: MediaType(
-                  "image",
-                  file.path
-                      .split('.')
-                      .last), // Set the content type dynamically
+              file.data, // File bytes
+              filename: file.name, // File name with extension
+              contentType:
+                  MediaType('image', file.extension), // Set the MIME type
             ),
           ),
         );
       }
 
-      var res = await remoteDataSource.createOrUpdateBrand(params);
+      var res = await remoteDataSource.createOrUpdateBrand(formData);
 
       return Right(res);
     } on APIException catch (e) {

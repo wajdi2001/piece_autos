@@ -16,12 +16,18 @@ class DashboadChnageMenuEvent extends DashboardEvent {
 }
 
 class DashboardSelectImageEvent extends DashboardEvent {
-  final File imageFile;
+  final Uint8List imageBytes;
+  final String imageName;
+  final String imageExtension;
 
-  const DashboardSelectImageEvent({required this.imageFile});
+  const DashboardSelectImageEvent({
+    required this.imageBytes,
+    required this.imageName,
+    required this.imageExtension,
+  });
 
   @override
-  List<Object> get props => [imageFile];
+  List<Object> get props => [imageBytes, imageName, imageExtension];
 }
 
 class DashboardUpsertBrandEvent extends DashboardEvent {

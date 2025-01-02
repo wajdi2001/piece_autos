@@ -6,35 +6,30 @@ import 'package:equatable/equatable.dart';
 class DashboardState extends Equatable {
   final StateStatus status;
   final String currentMenu;
-  final File? selectedImageFile; // Store the selected image as a File
-  final Uint8List? selectedImageBytes;
+  final ImageData? imageData;
   final String? errorMsg;
 
   const DashboardState(
       {this.currentMenu = "Brand",
-      this.selectedImageFile,
-      this.selectedImageBytes,
+      this.imageData,
       this.status = StateStatus.initial,
       this.errorMsg});
 
   @override
   List<Object?> get props => [
         currentMenu,
-        selectedImageFile,
-        selectedImageBytes,
+        imageData,
         status,
       ];
 
   DashboardState copyWith(
       {String? currentMenu,
-      File? selectedImageFile,
-      Uint8List? selectedImageBytes,
+      ImageData? imageData,
       StateStatus? status,
       String? errorMsg}) {
     return DashboardState(
       currentMenu: currentMenu ?? this.currentMenu,
-      selectedImageFile: selectedImageFile ?? this.selectedImageFile,
-      selectedImageBytes: selectedImageBytes ?? this.selectedImageBytes,
+      imageData: imageData ?? this.imageData,
       status: status ?? this.status,
       errorMsg: errorMsg ?? this.errorMsg,
     );
@@ -42,3 +37,11 @@ class DashboardState extends Equatable {
 }
 
 enum StateStatus { initial, loading, failed, succes }
+
+class ImageData {
+  final Uint8List data;
+  final String name;
+  final String extension;
+
+  ImageData({required this.data, required this.name, required this.extension});
+}

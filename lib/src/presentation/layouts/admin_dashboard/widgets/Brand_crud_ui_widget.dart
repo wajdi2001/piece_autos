@@ -43,7 +43,7 @@ class _BrandCrudUIState extends State<BrandCrudUI> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Open modal for creating/updating brand
-          showDialog(
+          showModalBottomSheet(
             context: context,
             builder: (context) => BlocProvider.value(
               value: sl<DashboardBloc>(),
@@ -172,53 +172,78 @@ class _BrandFormModalState extends State<BrandFormModal> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.brand == null ? 'Add Brand' : 'Edit Brand'),
-      content: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _nameController,
-                focusNode: _focusNode,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name.';
-                  }
-                  return null;
-                },
-                autofocus:
-                    true, // Automatically focus the field when dialog opens
+              Text(
+                widget.brand == null ? 'Add Brand' : 'Edit Brand',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              ImagePickerWidget(
-                defaultNetworkImage: widget.brand?.image,
+              const SizedBox(height: 16),
+              Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      controller: _nameController,
+                      focusNode: _focusNode,
+                      decoration: const InputDecoration(labelText: 'Name'),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name.';
+                        }
+                        return null;
+                      },
+                      autofocus: true,
+                    ),
+                    const SizedBox(height: 16),
+                    ImagePickerWidget(
+                      defaultNetworkImage: widget.brand?.image,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        // Dispatch event to add/update brand
+                        context.read<DashboardBloc>().add(
+                              DashboardUpsertBrandEvent(
+                                name: _nameController.text,
+                                brandId: widget.brand?.id,
+                              ),
+                            );
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text('Save'),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              // Dispatch event to add/update brand
-              context.read<DashboardBloc>().add(DashboardUpsertBrandEvent(
-                    name: _nameController.text,
-                    brandId: widget.brand?.id,
-                  ));
-              Navigator.of(context).pop();
-            }
-          },
-          child: const Text('Save'),
-        ),
-      ],
     );
   }
 }

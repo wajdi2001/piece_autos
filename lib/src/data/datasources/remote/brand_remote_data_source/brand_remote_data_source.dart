@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:piece_autos/core/errors/exceptions.dart';
 
 import '../../../../../core/services/injection_container.dart';
@@ -6,7 +7,7 @@ import '../../../../../core/utils/typedef.dart';
 
 abstract class BrandRemoteDataSource {
   Future<DataMap> getAllBrands(); // For GET
-  Future<DataMap> createOrUpdateBrand(DataMap params); // For POST
+  Future<DataMap> createOrUpdateBrand(FormData formData); // For POST
   Future<bool> deleteBrand(String id); // For DELETE
 }
 
@@ -25,10 +26,10 @@ class BrandRemoteDataSourceImpl implements BrandRemoteDataSource {
   }
 
   @override
-  Future<DataMap> createOrUpdateBrand(DataMap params) async {
+  Future<DataMap> createOrUpdateBrand(FormData params) async {
     final result = await dioHelper.postData(
       url: '/api/Brand/CreateOrUpdate',
-      data: params,
+      formData: params,
       isFormData: true, // For multipart/form-data
     );
     if (result.statusCode == 200 || result.statusCode == 201) {
