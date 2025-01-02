@@ -57,8 +57,9 @@ class DioHelper {
   /// Performs a POST request.
   Future<Response> postData({
     required String url,
-    required Map<String, dynamic> data,
+    Map<String, dynamic>? data,
     Map<String, dynamic>? query,
+    FormData? formData,
     bool isFormData = false,
   }) async {
     try {
@@ -69,7 +70,7 @@ class DioHelper {
         return await dio.post(
           url,
           queryParameters: query,
-          data: FormData.fromMap(data),
+          data: formData,
         );
       } else {
         dio.options.headers['Content-Type'] = 'application/json;charset=UTF-8';

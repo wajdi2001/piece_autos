@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:io';
-import 'package:dio/dio.dart';
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/services/injection_container.dart';
@@ -26,12 +26,14 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(state.copyWith(currentMenu: event.menu));
   }
 
-  FutureOr<void> onDashboardSelectImage(
+  Future<void> onDashboardSelectImage(
       DashboardSelectImageEvent event, Emitter<DashboardState> emit) async {
     emit(state.copyWith(
-      selectedImageFile: event.imageFile,
-      selectedImageBytes: await event.imageFile.readAsBytes(),
-    ));
+        imageData: ImageData(
+      data: event.imageBytes,
+      name: event.imageName,
+      extension: event.imageExtension,
+    )));
   }
 
   FutureOr<void> onDashboardUpsertBrand(
@@ -42,7 +44,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     final DataMap request = {
       "name": event.name,
       "id": event.brandId,
-      "image": state.selectedImageFile,
+      "image": state.imageData,
     };
 
     final result = await upsertBrandUserCase(request);
