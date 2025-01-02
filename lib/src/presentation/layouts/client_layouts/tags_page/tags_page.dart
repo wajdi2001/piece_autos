@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/src/data/models/tag_model.dart';
 
-import 'package:piece_autos/src/presentation/layouts/client_layouts/Item_page/widgets/custom_item_widget.dart';
+import 'package:piece_autos/src/presentation/layouts/client_layouts/tags_page/widgets/custom_tags_widget.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../controllers/global_bloc/global_bloc.dart';
 
-class ItemPage extends StatelessWidget {
+class TagsPage extends StatelessWidget {
   final VoidCallback onTapCategory;
-  const ItemPage({super.key, required this.onTapCategory});
+  const TagsPage({super.key, required this.onTapCategory});
 
   @override
   Widget build(BuildContext context) {

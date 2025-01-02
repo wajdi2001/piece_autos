@@ -9,7 +9,8 @@ import '../../../../controllers/global_bloc/global_bloc.dart';
 import '../../../../shared/library/searchble_drop_down/searchable_paginated_dropdown.dart';
 
 class HomeAppBarWidget extends StatelessWidget {
-  const HomeAppBarWidget({super.key});
+  final VoidCallback navToProductPage;
+  const HomeAppBarWidget({super.key,required this.navToProductPage});
 
   @override
   Widget build(BuildContext context) {
@@ -182,8 +183,7 @@ class HomeAppBarWidget extends StatelessWidget {
                                 onChanged: (ItemModel? selectedItem) {
                                   // Handle selection
                                   if (selectedItem != null) {
-                                    print(
-                                        "Selected Item: ${selectedItem.name}");
+                                    context.read<GlobalBloc>().add(GlobalSelectItemEvent(itemId: selectedItem.id));
                                   }
                                 },
                                 noRecordText: const Center(
@@ -241,7 +241,9 @@ class HomeAppBarWidget extends StatelessWidget {
                     onChanged: (ItemModel? selectedItem) {
                       // Handle selection
                       if (selectedItem != null) {
-                        print("Selected Item: ${selectedItem.name}");
+                     context.read<GlobalBloc>().add(GlobalSelectItemEvent(itemId: selectedItem.id));
+                     navToProductPage();
+
                       }
                     },
                     noRecordText: const Center(child: Text("No items found")),

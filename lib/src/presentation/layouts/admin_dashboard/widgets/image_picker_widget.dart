@@ -67,6 +67,7 @@ class ImagePickerWidget extends StatelessWidget {
               child: const Text("Pick an Image"),
             ),
             const SizedBox(height: 16),
+
             if (state.imageData != null)
               Column(
                 children: [

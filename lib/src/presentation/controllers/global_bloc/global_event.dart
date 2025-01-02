@@ -90,3 +90,9 @@ class GlobalCreateOrUpdateBrandEvent extends GlobalEvent {
   });
 }
  
+class GlobalUpdateShoppingCartEvent extends GlobalEvent
+{
+  final OrderItemModel item;
+  final bool remove;
+  const GlobalUpdateShoppingCartEvent({required this.item,required this.remove});
+}
