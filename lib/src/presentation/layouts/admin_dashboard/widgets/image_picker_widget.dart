@@ -1,5 +1,7 @@
+import 'dart:developer';
 import 'dart:io';
-
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,17 +18,41 @@ class ImagePickerWidget extends StatelessWidget {
 
   Future<void> _pickImage(BuildContext context) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80, // Adjust quality if needed
-    );
+    try {
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80, // Adjust quality if needed
+      );
 
-    if (pickedFile != null) {
-      // Dispatch the event with the selected image file
-      // ignore: use_build_context_synchronously
-      context
-          .read<DashboardBloc>()
-          .add(DashboardSelectImageEvent(imageFile: File(pickedFile.path)));
+      if (pickedFile != null) {
+        Uint8List imageBytes = await pickedFile.readAsBytes();
+
+        // Extract the name and extension
+        String imageName;
+        String imageExtension;
+
+        if (kIsWeb) {
+          imageName = pickedFile.name; // `name` is available on web
+          imageExtension = imageName.split('.').last;
+        } else {
+          // On mobile, extract from the file path
+          final filePath = pickedFile.path;
+          imageName = filePath.split('/').last;
+          imageExtension = imageName.split('.').last;
+        }
+
+        log("Selected image: name=$imageName, extension=$imageExtension");
+
+        context.read<DashboardBloc>().add(
+              DashboardSelectImageEvent(
+                imageBytes: imageBytes,
+                imageName: imageName,
+                imageExtension: imageExtension,
+              ),
+            );
+      }
+    } catch (e) {
+      log("Error picking image: $e");
     }
   }
 
@@ -41,20 +67,13 @@ class ImagePickerWidget extends StatelessWidget {
               child: const Text("Pick an Image"),
             ),
             const SizedBox(height: 16),
-            if (state.selectedImageBytes == null && defaultNetworkImage != null)
-              Image.network(
-                "$baseUrl/$defaultNetworkImage",
-                width: 100,
-                height: 100,
-                fit: BoxFit.cover,
-              ),
-            if (state.selectedImageBytes != null)
+            if (state.imageData != null)
               Column(
                 children: [
                   const Text("Selected Image:"),
                   const SizedBox(height: 8),
                   Image.memory(
-                    state.selectedImageBytes!,
+                    state.imageData!.data,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
