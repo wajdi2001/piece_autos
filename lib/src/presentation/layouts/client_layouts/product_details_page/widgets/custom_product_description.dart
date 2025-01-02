@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../data/models/item_model.dart';
+
 class CustomProductDescrpitionWidget extends StatelessWidget {
-  const CustomProductDescrpitionWidget({super.key});
+  final ItemModel itemModel;
+  const CustomProductDescrpitionWidget({super.key,required this.itemModel}) ;
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +15,9 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
         children: [
           // Onglets
           const TabBar(
+            dividerColor: Colors.white,
             labelColor: Colors.blue,
-            unselectedLabelColor: Colors.grey,
+            unselectedLabelColor: Colors.white,
             indicatorColor: Colors.blue,
             tabs: [
               Tab(text: "Description"),
@@ -25,7 +29,7 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
           const SizedBox(height: 16),
           // Contenu des onglets
           Container(
-            height: 200, // Hauteur du contenu
+            height: 30*itemModel.description!.keys.length.toDouble() ,// Hauteur du contenu
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -39,6 +43,7 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
               ],
             ),
             child: TabBarView(
+              
               children: [
                 // Contenu de l'onglet "Description"
                 _buildDescriptionTab(),
@@ -58,9 +63,10 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
 
   // Widget pour l'onglet "Description"
   Widget _buildDescriptionTab() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+    List<String> descriptionKey = itemModel.description!.keys.toList();
+    List<String> descriptionValue = itemModel.description!.values.toList();
+    return ListView(
+      children:  [
         Text(
           "Général",
           style: TextStyle(
@@ -69,13 +75,14 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8),
-        _CaracteristiqueRow(label: "Côté d'assemblage", value: "Essieu avant"),
-        _CaracteristiqueRow(label: "Diamètre intérieur [mm]", value: "12"),
-        _CaracteristiqueRow(label: "Diamètre extérieur [mm]", value: "36"),
-        _CaracteristiqueRow(
-          label: "Pour numéro OE",
-          value: "Part of 9831626480",
-        ),
+        SizedBox(
+            height: 500 ,
+            child: ListView.builder(
+              itemCount: descriptionKey.length,
+              itemBuilder: (context, index) => _CaracteristiqueRow(label:descriptionKey[index], value: descriptionValue[index]),),
+          ),
+        
+        
       ],
     );
   }

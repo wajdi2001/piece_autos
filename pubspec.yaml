@@ -5,7 +5,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.6.0-326.0.dev
 
 
 dependencies:
@@ -28,6 +28,7 @@ dependencies:
   http: ^1.2.2
   image_picker: ^0.8.7+4
   http_parser: ^4.0.0
+  universal_html: ^2.2.4
 
   
   

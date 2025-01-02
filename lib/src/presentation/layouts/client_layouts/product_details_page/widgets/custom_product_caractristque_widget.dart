@@ -21,8 +21,7 @@ class CustomProductCaractristqueWidget extends StatelessWidget {
         
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
            Text(
             itemModel.name,
@@ -41,7 +40,7 @@ class CustomProductCaractristqueWidget extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           SizedBox(
-            height: 200,
+            height: 300,
             width: 400,
             child: ListView.builder(
               itemCount: descriptionKey.length,

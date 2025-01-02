@@ -41,13 +41,13 @@ class ImagePickerWidget extends StatelessWidget {
               child: const Text("Pick an Image"),
             ),
             const SizedBox(height: 16),
-            if (state.selectedImageBytes == null && defaultNetworkImage != null)
+            /*if (state.selectedImageBytes == null && defaultNetworkImage != null)
               Image.network(
                 "$baseUrl/$defaultNetworkImage",
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
-              ),
+              ),*/
             if (state.selectedImageBytes != null)
               Column(
                 children: [

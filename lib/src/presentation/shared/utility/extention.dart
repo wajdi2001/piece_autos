@@ -8,7 +8,7 @@ extension IntExtension on int {
         
       },);
     }else if(this  == 1){
-      return const ItemPage();
+      return const TagsPage();
     }else{
       return  Container();
     }

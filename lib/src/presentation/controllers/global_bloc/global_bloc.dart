@@ -47,6 +47,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalGetAllItemsAndTagsFromCacheEvent>(
         _onGetAllItemsAndTagsFromCacheEvent);
         on<GlobalAddToShoppingCartEvent>(_onAddToShoppingCartEvent);
+        on<GlobalUpdateShoppingCartEvent>(_onUpdateShoppingCartEvent);
 
   }
 
@@ -147,7 +148,7 @@ void _onSelectBrand(
     (failure) {
       emit(state.copyWith(isCarModelsLoading: false));
     },
-    (carModels) {
+    (carModels) async{
       // Save to cache
       CacheHelper.saveData(key: "selectedBrandId", value: event.brandId);
       List<CarModelModel> carModelsModels = carModels.map((e) {
@@ -158,13 +159,7 @@ void _onSelectBrand(
           yearOfConstruction: e.yearOfConstruction,
         );
       }).toList();
-
-      CacheHelper.saveObjectList(
-        key: "carModels",
-        toJson: (p0) => p0.toJson1(),
-        value: carModelsModels,
-      );
-
+     
       // Update state
       emit(state.copyWith(
         isCarModelsLoading: false,
@@ -180,6 +175,8 @@ void _onSelectCarModel(
   ));
 
   try {
+    
+
     final selectedCarModel = state.carModels.firstWhere(
       (carModel) => carModel.id == event.carModelId,
       orElse: () => throw Exception("Car model not found"),
@@ -187,10 +184,6 @@ void _onSelectCarModel(
 
     // Save to cache
     CacheHelper.saveData(key: "selectedCarModelId", value: event.carModelId);
-    CacheHelper.saveData(
-        key: "selectedYearOfConstruction",
-        value: selectedCarModel.yearOfConstruction);
-
     // Update state
     emit(state.copyWith(
       isYearsLoading: false,
@@ -339,8 +332,9 @@ void _onSelectCarModel(
 
   void _onSelectItemEvent(
       GlobalSelectItemEvent event, Emitter<GlobalState> emit) {
+        emit(state.copyWith(status: GlobalStatus.loading));
     CacheHelper.saveData(key: 'selectedItemModelId', value: event.itemId);
-    emit(state.copyWith(selectedItemModelId: event.itemId));
+    emit(state.copyWith(selectedItemModelId: event.itemId,status: GlobalStatus.loaded));
   }
 
   void _onGetAllItemsAndTagsFromCacheEvent(
@@ -350,9 +344,10 @@ void _onSelectCarModel(
 
     try {
       // Fetch items and tags from cache
-      List<TagModel> tags = (await CacheHelper.getData(key: 'tags') as List)
-          .map((tag) => TagModel.fromJson(tag))
-          .toList();
+      List<TagModel> tags = CacheHelper.getObjectList(
+        key: 'tags',
+        fromJson: (jsonString) => TagModel.fromJson1(jsonString),
+      );
 
       List<ItemModel> retrievedItems = CacheHelper.getObjectList(
         key: 'items',
@@ -378,7 +373,20 @@ void _onSelectCarModel(
       GlobalAddToShoppingCartEvent event,
       Emitter<GlobalState> emit) async {
     final List<OrderItemModel > newList=List.from(state.shoppingCart);
-    newList.add(event.item);
+    bool success = false;
+    for (var e in newList) {
+      if(e.itemId==event.item.itemId)
+      {
+
+        OrderItemModel newItemModel =OrderItemModel(id: e.id, itemId: e.itemId, quantity: e.quantity+1);
+        newList.remove(e);
+        newList.add(newItemModel);
+        success = true;
+      }
+    }
+    if(!success){
+      newList.add(event.item);
+    }
     emit(state.copyWith(shoppingCart: newList));
 }
 
@@ -401,5 +409,23 @@ void _onSelectCarModel(
       updatedList.add(brandModel);
       emit(state.copyWith(status: GlobalStatus.loaded, brands: updatedList));
     }
+  }
+
+  void _onUpdateShoppingCartEvent(
+      GlobalUpdateShoppingCartEvent event,
+      Emitter<GlobalState> emit) async {
+        List<OrderItemModel> newList = List.from(state.shoppingCart);
+        if(event.remove)
+        {
+          newList.removeWhere((elt) => elt.itemId == event.item.itemId);
+        }else{
+          int index = newList.indexWhere((elt) => elt.itemId == event.item.itemId);
+        if (index != -1) {
+          newList[index] = event.item;
+        }
+        }
+        
+        emit(state.copyWith(shoppingCart: newList));
+    
   }
 }

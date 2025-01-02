@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:piece_autos/core/utils/cache_helper.dart';
 import 'package:piece_autos/src/data/models/item_model.dart';
 import 'package:piece_autos/src/presentation/layouts/admin_dashboard/admin_layout.dart';
-import 'package:piece_autos/src/presentation/layouts/client_layouts/Item_page/item_page.dart';
+import 'package:piece_autos/src/presentation/layouts/client_layouts/tags_page/tags_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/category_details_page/category_detail_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/home_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/custom_body_widget.dart';
@@ -66,7 +66,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: itemsRoute,
-                builder: (context, state) => ItemPage(
+                builder: (context, state) => TagsPage(
                   onTapCategory: () {
                     StatefulNavigationShell.of(context).goBranch(2);
                   },
@@ -98,13 +98,8 @@ class AppRouter {
                   builder: (context, state) =>
                       BlocBuilder<GlobalBloc, GlobalState>(
                         builder: (context, state) {
-                          String id =CacheHelper.getData(key: "selectedItemModelId");
-                          List<ItemModel> retrievedItems = CacheHelper.getObjectList(
-  key: 'items',
-  fromJson: (jsonString) => ItemModel.fromJson1(jsonString),
-);
-                           ItemModel itemModel = retrievedItems.where((e)=>e.id==id).first ;
-                          return ProductDetailPage(itemModel: itemModel,);
+                          
+                          return ProductDetailPage();
                         },
                       )),
             ],

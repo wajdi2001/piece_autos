@@ -8,25 +8,17 @@ import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
 import 'package:piece_autos/src/presentation/shared/library/searchble_drop_down/searchable_paginated_dropdown.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-import '../../../../../../core/utils/cache_helper.dart';
 import '../../../../controllers/global_bloc/global_bloc.dart';
 
 class CustomBodyWidget extends StatelessWidget {
   final VoidCallback onPressed;
 
-  CustomBodyWidget({
+  const CustomBodyWidget({
     super.key,
     required this.onPressed,
   });
 
-  final List<String> itemsModels = [
-    'C3',
-    'Dacia Sandero',
-    'Nissan GTR',
-    'Peugeot 208'
-  ];
-  final List<String> itemsYears = ['2022', '2023', '2024', '2025'];
-  final List<String> itemsMotorizations = ['1.2', '1.4', '1.6', '1.8'];
+  
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +56,7 @@ class CustomBodyWidget extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // Dropdowns Section
-                    state.status ==GlobalStatus.loaded?
+                    state.status ==GlobalStatus.loaded||state.status ==GlobalStatus.initial?
                     _buildDropdownSection(
                       context,
                       brands: brands,
@@ -115,20 +107,16 @@ Widget _buildDropdownSection(BuildContext context,
       // Brand Dropdown
       BlocBuilder<GlobalBloc, GlobalState>(
         builder: (context, state) {
-          List<BrandModel> retrievedBrands = CacheHelper.getObjectList(
-  key: 'brands',
-  fromJson: (jsonString) => BrandModel.fromJson1(jsonString),
-) ?? []; // Fallback to an empty list if null
+           // Fallback to an empty list if null
 
-String selectedBrandId = CacheHelper.getData(key: "selectedBrandId") ?? '';
 
-          return state.isBrandsLoading && retrievedBrands.isEmpty
+          return state.isBrandsLoading 
               ? const Center(child: CircularProgressIndicator())
               : _buildSearchableDropdown(
                   enabled: true,
-                  hint: state.selectedBrandId != null || selectedBrandId.isNotEmpty
-                      ? retrievedBrands
-                          .firstWhere((e) => e.id == selectedBrandId)
+                  hint: state.selectedBrandId != null 
+                      ? state.brands
+                          .firstWhere((e) => e.id == state.selectedBrandId)
                           .name
                       : "Choisir la marque",
                   searchHint: "Saisir la marque",
@@ -144,20 +132,15 @@ String selectedBrandId = CacheHelper.getData(key: "selectedBrandId") ?? '';
       // Car Model Dropdown
       BlocBuilder<GlobalBloc, GlobalState>(
         builder: (context, state) {
-          List<CarModelModel> retrievedItems = CacheHelper.getObjectList(
-        key: 'carModels',
-        fromJson: (jsonString) => CarModelModel.fromJson1(jsonString),
-      )??[];
-      String selectedCarModelId =CacheHelper.getData(key: "selectedCarModelId")??'';
-      String selectedBrandId =CacheHelper.getData(key: "selectedBrandId")??'';
+          
 
-          return state.isCarModelsLoading && retrievedItems.isEmpty
+          return state.isCarModelsLoading
               ? const Center(child: CircularProgressIndicator())
               : _buildSearchableDropdown(
-                  enabled: selectedBrandId.isNotEmpty,
-                  hint: state.selectedCarModelId != null|| selectedCarModelId.isNotEmpty
-                      ? retrievedItems
-                          .firstWhere((e) => e.id == selectedCarModelId)
+                  enabled: state.selectedBrandId != null,
+                  hint: state.selectedCarModelId != null
+                      ? state.carModels
+                          .firstWhere((e) => e.id == state.selectedCarModelId)
                           .name
                       : "Choisir le modèle",
                   searchHint: "Saisir le modèle",
@@ -174,6 +157,7 @@ String selectedBrandId = CacheHelper.getData(key: "selectedBrandId") ?? '';
       // Year Dropdown
       BlocBuilder<GlobalBloc, GlobalState>(
         builder: (context, state) {
+       
           return _buildSearchableDropdown(
             enabled: true,
             hint: state.selectedYearOfConstruction != null

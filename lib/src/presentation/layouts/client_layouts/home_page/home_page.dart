@@ -11,6 +11,7 @@ import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/wi
 
 import 'widgets/contact_footer_Widget.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:universal_html/html.dart' as html;
 
 class HomePage extends StatefulWidget {
   const HomePage( {super.key,required this.navigationShell});
@@ -23,9 +24,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-  
     super.initState();
-    context.read<GlobalBloc>()..add(GlobalGetAllBrandsEvent())..add(GlobalGetAllCarModelEvent());
+
+    // Save the reference to the GlobalBloc
+    GlobalBloc globalBloc = context.read<GlobalBloc>();
+
+    // Add events to the GlobalBloc
+    globalBloc
+      ..add(GlobalGetAllBrandsEvent())
+      ..add(GlobalGetAllCarModelEvent());
+
+    // Handle browser reload
+    html.window.onBeforeUnload.listen((event) {
+      globalBloc
+      ..add(GlobalGetAllBrandsEvent())
+      ..add(GlobalGetAllCarModelEvent());
+    });
   }
   @override
   
@@ -48,7 +62,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             child: ListView(children: [
-              HomeAppBarWidget()
+              HomeAppBarWidget(navToProductPage:() {
+                widget.navigationShell.goBranch(3);
+              } ,)
                 ..animate()
                     .fadeIn(duration: 600.ms, delay: 100.ms)
                     .slideY(begin: -0.2, end: 0),
