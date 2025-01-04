@@ -16,6 +16,7 @@ part of 'global_bloc.dart';
   final List<ItemModel> items;
   final bool isOpenedSearch;
   final List<OrderItemModel> shoppingCart;
+  final List<TvaModel> tvas;
 
   final GlobalStatus status;
   final List<CarModelModel> carModels;
@@ -39,6 +40,7 @@ part of 'global_bloc.dart';
     this.isOpenedSearch = false,
     this.selectedItemModelId='',
     this.shoppingCart = const [],
+    this.tvas = const [],
 
 
  
@@ -48,7 +50,7 @@ part of 'global_bloc.dart';
   @override
   List<Object> get props => [indexPage, routerName, categoryTitile, brands,status, carModels,isBrandsLoading,
         isCarModelsLoading,
-        isYearsLoading, tags,items,isOpenedSearch,selectedItemModelId,shoppingCart ];
+        isYearsLoading, tags,items,isOpenedSearch,selectedItemModelId,shoppingCart,tvas ];
   GlobalState copyWith({
     int? indexPage,
     String? routerName,
@@ -68,6 +70,7 @@ part of 'global_bloc.dart';
     bool? isOpenedSearch,
     String? selectedItemModelId,
     List<OrderItemModel>? shoppingCart,
+    List<TvaModel>? tvas,
     
     
   }) {
@@ -90,6 +93,7 @@ part of 'global_bloc.dart';
       isOpenedSearch: isOpenedSearch?? this.isOpenedSearch,
       selectedItemModelId: selectedItemModelId?? this.selectedItemModelId,
       shoppingCart: shoppingCart?? this.shoppingCart,
+      tvas: tvas?? this.tvas,
     
     );
   }

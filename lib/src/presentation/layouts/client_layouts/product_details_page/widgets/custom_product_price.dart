@@ -4,7 +4,6 @@ import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/core/utils/cache_helper.dart';
 import 'package:piece_autos/src/data/models/order_item_model.dart';
 import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
-import 'package:piece_autos/src/presentation/layouts/client_layouts/product_details_page/widgets/category_chip.dart';
 
 import '../../../../../data/models/brand_model.dart';
 import '../../../../../data/models/item_model.dart';
@@ -70,7 +69,7 @@ class CustomProductPrice extends StatelessWidget {
          ),
          const SizedBox(height: 16),
           Text("Référence: ${itemModel.ref}"),
-          Text("Fabricant: ${brandName}"),
+          Text("Fabricant: $brandName"),
          
          const SizedBox(height: 16),
          Row(
@@ -91,7 +90,7 @@ class CustomProductPrice extends StatelessWidget {
                  ),
                  child: const Text(
                    "Ajouter au panier",
-                   style: TextStyle(fontSize: 16),
+                   style: TextStyle(fontSize: 16,color: Colors.white),
                  ),
                ),
              ),
@@ -104,24 +103,7 @@ class CustomProductPrice extends StatelessWidget {
              ),
            ],
          ),
-          const SizedBox(height: 24),
-                      // Associated Categories
-                      const Text(
-                        "Catégories associées:",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: [
-                          CategoryChip(label: "Silent-bloc de triangle"),
-                          CategoryChip(label: "Suspension et bras"),
-                        ],
-                      ),
+          
                           ],
                         ),
                       );

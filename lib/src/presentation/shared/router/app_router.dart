@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:piece_autos/core/utils/cache_helper.dart';
-import 'package:piece_autos/src/data/models/item_model.dart';
+
 import 'package:piece_autos/src/presentation/layouts/admin_dashboard/admin_layout.dart';
+import 'package:piece_autos/src/presentation/layouts/auth_layouts/auth_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/tags_page/tags_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/category_details_page/category_detail_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/home_page.dart';
@@ -17,6 +17,7 @@ final _tabNavigatorKey1 = GlobalKey<NavigatorState>();
 final _tabNavigatorKey2 = GlobalKey<NavigatorState>();
 final _tabNavigatorKey3 = GlobalKey<NavigatorState>();
 final _tabNavigatorKey4 = GlobalKey<NavigatorState>();
+final _tabNavigatorKey5 = GlobalKey<NavigatorState>();
 
 class AppRouter {
   static const homeRoute = '/home';
@@ -24,7 +25,7 @@ class AppRouter {
   static const categorieDetailsRoute = '/category';
   static const productRoute = '/product';
   static const adminDashboardRoute = '/admin'; // Admin Dashboard Route
-
+  static const authRoute = '/auth'; // Auth Route
   AppRouter._();
 
   static final router = GoRouter(
@@ -89,7 +90,7 @@ class AppRouter {
               ),
             ],
           ),
-
+        //branch 4: Product Details
           StatefulShellBranch(
             navigatorKey: _tabNavigatorKey4,
             routes: [
@@ -104,6 +105,22 @@ class AppRouter {
                       )),
             ],
           ),
+          //branch 5: auth page 
+          // Add auth routes here
+        StatefulShellBranch(
+          navigatorKey: _tabNavigatorKey5,
+          routes: 
+      [
+         GoRoute(
+                  path: authRoute,
+                  builder: (context, state) =>
+                      BlocBuilder<GlobalBloc, GlobalState>(
+                        builder: (context, state) {
+                          
+                          return AuthPage();
+                        },
+                      )),
+      ])
         ],
       ),
       // Add Admin Dashboard as a standalone route

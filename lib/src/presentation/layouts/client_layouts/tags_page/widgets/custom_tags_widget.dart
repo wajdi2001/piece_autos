@@ -45,7 +45,7 @@ class CustomItemWidget extends StatelessWidget {
               children: [
                 // Image de la catégorie
                 Image.network(
-                  '$baseUrl/${tag.imageUrl}',
+                  '$baseUrl${tag.imageUrl}',
                   height: 80,
                   fit: BoxFit.contain,
                 ),

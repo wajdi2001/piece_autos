@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../../data/models/item_model.dart';
 
@@ -29,7 +30,10 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
           const SizedBox(height: 16),
           // Contenu des onglets
           Container(
-            height: 30*itemModel.description!.keys.length.toDouble() ,// Hauteur du contenu
+            height: ResponsiveBreakpoints.of(context)
+                                        .isMobile ||
+                                    ResponsiveBreakpoints.of(context).isPhone ||
+                                    ResponsiveBreakpoints.of(context).isTablet?100:200 ,// Hauteur du contenu
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Colors.white,

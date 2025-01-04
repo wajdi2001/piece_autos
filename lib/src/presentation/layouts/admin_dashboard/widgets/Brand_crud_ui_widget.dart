@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:io';
 
 import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/core/services/injection_container.dart';
@@ -84,7 +83,7 @@ class BrandTable extends StatelessWidget {
                   DataCell(Text(brand.name)),
                   DataCell(
                     Image.network(
-                      "$baseUrl/${brand.image}",
+                      "$baseUrl${brand.image}",
                       width: 50,
                       height: 50,
                       errorBuilder: (context, error, stackTrace) {

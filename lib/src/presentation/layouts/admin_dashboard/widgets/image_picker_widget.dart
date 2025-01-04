@@ -1,11 +1,8 @@
 import 'dart:developer';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:piece_autos/core/utils/constants.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_bloc.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_state.dart';
 

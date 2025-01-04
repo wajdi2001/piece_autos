@@ -28,7 +28,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   Future<void> onDashboardSelectImage(
       DashboardSelectImageEvent event, Emitter<DashboardState> emit) async {
-        final fileData = await event.imageFile.readAsBytes(); 
     emit(state.copyWith(
 
         imageData: ImageData(
