@@ -78,7 +78,6 @@ class CustomProductPrice extends StatelessWidget {
               const SizedBox(height: 16),
               Text("Référence: ${itemModel.ref}"),
               Text("Fabricant: $brandName"),
-
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -98,85 +97,26 @@ class CustomProductPrice extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-         BoxShadow(
-           color: Colors.grey.withAlpha(55),
-           blurRadius: 10,
-           spreadRadius: 2,
-         ),
-                          ],
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-         Row(
-           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-           children: [
-              Text(
-               itemModel.price.toString(),
-               style: TextStyle(
-                 fontSize: 24,
-                 fontWeight: FontWeight.bold,
-                 color: Colors.black,
-               ),
-             ),
-             Container(
-               padding: const EdgeInsets.symmetric(
-                   horizontal: 12, vertical: 4),
-               decoration: BoxDecoration(
-                 color: Colors.green.shade100,
-                 borderRadius: BorderRadius.circular(20),
-               ),
-               child:  Text(
-                 itemModel.status ==ItemStatus.available?"En Stock":itemModel.status ==ItemStatus.notAvailable?"Hors Stock": "Soon Stock",
-                 style: TextStyle(
-                   color: Colors.green,
-                   fontWeight: FontWeight.bold,
-                 ),
-               ),
-             ),
-           ],
-         ),
-         const SizedBox(height: 16),
-          Text("Référence: ${itemModel.ref}"),
-          Text("Fabricant: $brandName"),
-         
-         const SizedBox(height: 16),
-         Row(
-           children: [
-             // Add to Cart Button
-             Expanded(
-               child: ElevatedButton(
-                 onPressed: () {
-    
-                  context.read<GlobalBloc>().add(GlobalAddToShoppingCartEvent(item: OrderItemModel(id: "sdxvfbgfngfbrsfvxc", itemId: itemModel.id, quantity: 1)));
-                 },
-                 style: ElevatedButton.styleFrom(
-                   backgroundColor: Colors.blue,
-                   padding: const EdgeInsets.symmetric(vertical: 16),
-                   shape: RoundedRectangleBorder(
-                     borderRadius: BorderRadius.circular(10),
-                   ),
-                 ),
-                 child: const Text(
-                   "Ajouter au panier",
-                   style: TextStyle(fontSize: 16,color: Colors.white),
-                 ),
-               ),
-             ),
-             const SizedBox(width: 16),
-             // Add to Favorites Button
-             IconButton(
-               onPressed: () {},
-               icon: const Icon(Icons.favorite_border),
-               color: Colors.grey,
-             ),
-           ],
-         ),
-          
-                          ],
-                        ),
-                      );
+                      ),
+                      child: const Text(
+                        "Ajouter au panier",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  // Add to Favorites Button
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.favorite_border),
+                    color: Colors.grey,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
       },
     );
   }
