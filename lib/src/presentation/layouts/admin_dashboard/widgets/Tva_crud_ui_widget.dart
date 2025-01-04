@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 
 class TVACrudUI extends StatelessWidget {
   const TVACrudUI({super.key});
@@ -14,21 +16,7 @@ class TVACrudUI extends StatelessWidget {
         ),
         SizedBox(height: 16),
         Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Table View
-              Expanded(
-                child: TVATable(),
-              ),
-              // Form View
-              Container(
-                width: 300,
-                child: TVAForm(),
-              ),
-            ],
-          ),
+          child: TVATable(),
         ),
       ],
     );
@@ -40,26 +28,28 @@ class TVATable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DataTable(
-      columns: const [
-        DataColumn(label: Text('ID')),
-        DataColumn(label: Text('Name')),
-        DataColumn(label: Text('Percentage')),
-        DataColumn(label: Text('Actions')),
-      ],
-      rows: [
-        DataRow(cells: [
-          DataCell(Text('1')),
-          DataCell(Text('Standard Rate')),
-          DataCell(Text('20.0%')),
-          DataCell(Row(
-            children: [
-              IconButton(icon: Icon(Icons.edit), onPressed: () {}),
-              IconButton(icon: Icon(Icons.delete), onPressed: () {}),
-            ],
-          )),
-        ]),
-      ],
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (context, state) {
+        return DataTable(
+          columns: const [
+            DataColumn(label: Text('Name')),
+            DataColumn(label: Text('Percentage')),
+            DataColumn(label: Text('Actions')),
+          ],
+          rows: [
+            DataRow(cells: [
+              DataCell(Text('Standard Rate')),
+              DataCell(Text('20.0%')),
+              DataCell(Row(
+                children: [
+                  IconButton(icon: Icon(Icons.edit), onPressed: () {}),
+                  IconButton(icon: Icon(Icons.delete), onPressed: () {}),
+                ],
+              )),
+            ]),
+          ],
+        );
+      },
     );
   }
 }

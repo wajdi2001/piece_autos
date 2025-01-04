@@ -99,7 +99,6 @@ class AppRouter {
                   builder: (context, state) =>
                       BlocBuilder<GlobalBloc, GlobalState>(
                         builder: (context, state) {
-                          
                           return ProductDetailPage();
                         },
                       )),

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_bloc.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_state.dart';
 
@@ -40,6 +41,7 @@ class ImagePickerWidget extends StatelessWidget {
 
         log("Selected image: name=$imageName, extension=$imageExtension");
 
+        // ignore: use_build_context_synchronously
         context.read<DashboardBloc>().add(
               DashboardSelectImageEvent(
                 imageBytes: imageBytes,
@@ -57,6 +59,8 @@ class ImagePickerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
+        log(defaultNetworkImage ?? "Empty");
+        log("ImageData,${state.imageData}");
         return Column(
           children: [
             ElevatedButton(
@@ -64,7 +68,13 @@ class ImagePickerWidget extends StatelessWidget {
               child: const Text("Pick an Image"),
             ),
             const SizedBox(height: 16),
-
+            if (defaultNetworkImage != null && state.imageData == null)
+              Image.network(
+                defaultNetworkImage!,
+                width: 100,
+                height: 100,
+                fit: BoxFit.cover,
+              ),
             if (state.imageData != null)
               Column(
                 children: [

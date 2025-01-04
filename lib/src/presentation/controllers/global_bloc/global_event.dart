@@ -42,6 +42,12 @@ class GlobalDeleteBrandEvent extends GlobalEvent {
   GlobalDeleteBrandEvent({required this.brandId});
 }
 
+class GlobalDeleteCarModelEvent extends GlobalEvent {
+  final String carModelId;
+
+  GlobalDeleteCarModelEvent({required this.carModelId});
+}
+
 class GlobalGetAllTagsEvent extends GlobalEvent {
   final DataMap? query;
 
@@ -59,42 +65,39 @@ class GlobalSwitchSearchBarEvent extends GlobalEvent {
   const GlobalSwitchSearchBarEvent({required this.show});
 }
 
-class GlobalSelectItemEvent extends GlobalEvent
-{
+class GlobalSelectItemEvent extends GlobalEvent {
   final String itemId;
   const GlobalSelectItemEvent({required this.itemId});
 }
 
-class GlobalGetAllItemsAndTagsFromCacheEvent extends GlobalEvent
-{
+class GlobalGetAllItemsAndTagsFromCacheEvent extends GlobalEvent {
   const GlobalGetAllItemsAndTagsFromCacheEvent();
 }
 
-
-
-class GlobalAddToShoppingCartEvent extends GlobalEvent
-{
+class GlobalAddToShoppingCartEvent extends GlobalEvent {
   final OrderItemModel item;
   const GlobalAddToShoppingCartEvent({required this.item});
 }
 
 class GlobalCreateOrUpdateBrandEvent extends GlobalEvent {
-  final String id;
-  final String name;
-  final String? imageUrl;
+  final BrandModel brandModel;
 
   GlobalCreateOrUpdateBrandEvent({
-    required this.id,
-    required this.name,
-    required this.imageUrl,
+    required this.brandModel,
   });
 }
- 
-class GlobalUpdateShoppingCartEvent extends GlobalEvent
-{
+
+class GlobalCreateOrUpdateCarModelEvent extends GlobalEvent {
+  final DataCarModel carModel;
+
+  GlobalCreateOrUpdateCarModelEvent({required this.carModel});
+}
+
+class GlobalUpdateShoppingCartEvent extends GlobalEvent {
   final OrderItemModel item;
   final bool remove;
-  const GlobalUpdateShoppingCartEvent({required this.item,required this.remove});
+  const GlobalUpdateShoppingCartEvent(
+      {required this.item, required this.remove});
 }
 class GlobalGetAllTVAEvent extends GlobalEvent 
 {

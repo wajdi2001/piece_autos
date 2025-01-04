@@ -19,14 +19,84 @@ class CustomProductPrice extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GlobalBloc, GlobalState>(
       builder: (context, state) {
-        String brandName=CacheHelper.getObjectList(key: "brands", fromJson: (jsonString) => BrandModel.fromJson1(jsonString)).where((e)=>e.id==itemModel.brandId).first.name;
-        
-        
+        String brandName = CacheHelper.getObjectList(
+                key: "brands",
+                fromJson: (jsonString) => BrandModel.fromJson1(jsonString))
+            .where((e) => e.id == itemModel.brandId)
+            .first
+            .name;
+
         return Container(
           height: 400,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withAlpha(55),
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    itemModel.price.toString(),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade100,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      itemModel.status == ItemStatus.available
+                          ? "En Stock"
+                          : itemModel.status == ItemStatus.notAvailable
+                              ? "Hors Stock"
+                              : "Soon Stock",
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Text("Référence: ${itemModel.ref}"),
+              Text("Fabricant: $brandName"),
+
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  // Add to Cart Button
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<GlobalBloc>().add(
+                            GlobalAddToShoppingCartEvent(
+                                item: OrderItemModel(
+                                    id: "sdxvfbgfngfbrsfvxc",
+                                    itemId: itemModel.id,
+                                    quantity: 1)));
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
          BoxShadow(

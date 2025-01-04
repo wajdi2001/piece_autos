@@ -72,14 +72,14 @@ class BrandTable extends StatelessWidget {
             scrollDirection: Axis.horizontal, // Enable horizontal scrolling
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('ID')),
+                // DataColumn(label: Text('ID')),
                 DataColumn(label: Text('Name')),
                 DataColumn(label: Text('Image')),
                 DataColumn(label: Text('Actions')),
               ],
               rows: brands.map((brand) {
                 return DataRow(cells: [
-                  DataCell(Text(brand.id.toString())),
+                  // DataCell(Text(brand.id.toString())),
                   DataCell(Text(brand.name)),
                   DataCell(
                     Image.network(
@@ -108,10 +108,13 @@ class BrandTable extends StatelessWidget {
                         icon: const Icon(Icons.edit),
                         onPressed: () {
                           // Open modal for editing brand
-                          showDialog(
+                          showModalBottomSheet(
                             context: context,
-                            builder: (context) => BrandFormModal(
-                              brand: brand,
+                            builder: (context) => BlocProvider.value(
+                              value: sl<DashboardBloc>(),
+                              child: BrandFormModal(
+                                brand: brand,
+                              ),
                             ),
                           );
                         },
@@ -209,7 +212,9 @@ class _BrandFormModalState extends State<BrandFormModal> {
                     ),
                     const SizedBox(height: 16),
                     ImagePickerWidget(
-                      defaultNetworkImage: widget.brand?.image,
+                      defaultNetworkImage: widget.brand != null
+                          ? "$baseUrl${widget.brand!.image}"
+                          : null,
                     ),
                   ],
                 ),
@@ -235,7 +240,7 @@ class _BrandFormModalState extends State<BrandFormModal> {
                         Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('Save'),
+                    child: Text(widget.brand != null ? 'Edit' : 'Save'),
                   ),
                 ],
               ),

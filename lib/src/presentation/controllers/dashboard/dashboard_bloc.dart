@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/services/injection_container.dart';
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/usecases/brand_use_cases/create_or_update_brand.dart';
+import 'package:piece_autos/src/domain/usecases/car_model_use_cases/create_or_update.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_state.dart';
 import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 
@@ -19,7 +20,17 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboadChnageMenuEvent>(onDashboardChangeMenu);
     on<DashboardSelectImageEvent>(onDashboardSelectImage);
     on<DashboardUpsertBrandEvent>(onDashboardUpsertBrand);
+    on<DashboardChangeSelectedBrandEvent>(onDashboardChangeSelectedBrandEvent);
+    on<DashboardUpsertCarModelEvent>(
+      onDashboardUpsertCarModelEvent,
+    );
   }
+
+  FutureOr<void> onDashboardChangeSelectedBrandEvent(
+      DashboardChangeSelectedBrandEvent event, emit) {
+    emit(state.copyWith(selectedBrandId: event.brandId));
+  }
+
   final GlobalBloc _globalBloc;
 
   FutureOr<void> onDashboardChangeMenu(DashboadChnageMenuEvent event, emit) {
@@ -29,7 +40,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   Future<void> onDashboardSelectImage(
       DashboardSelectImageEvent event, Emitter<DashboardState> emit) async {
     emit(state.copyWith(
-
         imageData: ImageData(
       data: event.imageBytes,
       name: event.imageName,
@@ -53,7 +63,31 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       emit(
           state.copyWith(status: StateStatus.failed, errorMsg: f.errorMessage));
     }, (r) {
-      if (event.brandId == null) {}
+      if (r != null) {
+        _globalBloc.add(GlobalCreateOrUpdateBrandEvent(brandModel: r));
+      }
+    });
+  }
+
+  FutureOr<void> onDashboardUpsertCarModelEvent(
+      DashboardUpsertCarModelEvent event, emit) async {
+    emit(state.copyWith(status: StateStatus.loading));
+    final createOrUpdateCarModelUseCase = sl<CreateOrUpdateCarModelUseCase>();
+    final DataMap request = {
+      "id": event.carModelId,
+      "name": event.name,
+      "brandId": state.selectedBrandId,
+      "yearOfConstruction": event.yearOfConstruction,
+    };
+
+    final result = await createOrUpdateCarModelUseCase(request);
+    result.fold((f) {
+      emit(
+          state.copyWith(status: StateStatus.failed, errorMsg: f.errorMessage));
+    }, (r) {
+      if (r != null) {
+        _globalBloc.add(GlobalCreateOrUpdateCarModelEvent(carModel: r));
+      }
     });
   }
 }

@@ -3,40 +3,37 @@ import 'dart:convert';
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/car_model.dart';
 
-class CarModelModel extends CarModel{
-   const  CarModelModel({
-      required super.id,
+class DataCarModel extends DomainCarModel {
+  const DataCarModel({
+    required super.id,
     required super.name,
     required super.brandId,
     required super.yearOfConstruction,
   });
 
-
-  
-  CarModelModel copyWith({
-     String? id,
-     String? name,
-     String? brandId,
-     int? yearOfConstruction,
-    
+  DataCarModel copyWith({
+    String? id,
+    String? name,
+    String? brandId,
+    int? yearOfConstruction,
   }) {
-    return CarModelModel(
+    return DataCarModel(
       id: id ?? super.id,
       name: name ?? super.name,
       brandId: brandId ?? super.brandId,
       yearOfConstruction: yearOfConstruction ?? super.yearOfConstruction,
-    
     );
   }
-  factory   CarModelModel.fromJson(DataMap json) {
-    return CarModelModel(
+
+  factory DataCarModel.fromJson(DataMap json) {
+    return DataCarModel(
       id: json['id'],
       name: json['name'],
       brandId: json['brandId'],
       yearOfConstruction: json['yearOfConstruction'],
     );
   }
-  
+
   DataMap toJson() {
     return {
       'id': id,
@@ -46,20 +43,18 @@ class CarModelModel extends CarModel{
     };
   }
 
-
-
-    String toJson1() {
+  String toJson1() {
     return jsonEncode({
-     'id': id,
+      'id': id,
       'name': name,
       'brandId': brandId,
       'yearOfConstruction': yearOfConstruction,
     });
   }
 
-  factory CarModelModel.fromJson1(String jsonString) {
+  factory DataCarModel.fromJson1(String jsonString) {
     final json = jsonDecode(jsonString);
-    return CarModelModel(
+    return DataCarModel(
       id: json['id'],
       name: json['name'],
       brandId: json['brandId'],
