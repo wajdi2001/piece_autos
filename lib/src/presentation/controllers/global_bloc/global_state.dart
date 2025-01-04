@@ -1,15 +1,15 @@
 part of 'global_bloc.dart';
 
- class GlobalState extends Equatable {
+class GlobalState extends Equatable {
   final String routerName;
   final int indexPage;
   final String categoryTitile;
   final List<BrandModel> brands;
   final String? selectedBrandId; // Currently selected brand
   final String? selectedCarModelId; // Currently selected car model
-    final int? selectedYearOfConstruction; // Selected year of construction
-    final String errorMessage;
-    final bool isBrandsLoading;
+  final int? selectedYearOfConstruction; // Selected year of construction
+  final String errorMessage;
+  final bool isBrandsLoading;
   final bool isCarModelsLoading;
   final bool isYearsLoading;
   final List<TagModel> tags;
@@ -18,9 +18,9 @@ part of 'global_bloc.dart';
   final List<OrderItemModel> shoppingCart;
 
   final GlobalStatus status;
-  final List<CarModelModel> carModels;
+  final List<DataCarModel> carModels;
   final String selectedItemModelId;
-   const  GlobalState({
+  const GlobalState({
     this.indexPage = 0,
     this.routerName = 'home',
     this.categoryTitile = '',
@@ -37,30 +37,39 @@ part of 'global_bloc.dart';
     this.tags = const [],
     this.items = const [],
     this.isOpenedSearch = false,
-    this.selectedItemModelId='',
+    this.selectedItemModelId = '',
     this.shoppingCart = const [],
-
-
- 
   });
 
-  
   @override
-  List<Object> get props => [indexPage, routerName, categoryTitile, brands,status, carModels,isBrandsLoading,
+  List<Object> get props => [
+        indexPage,
+        routerName,
+        categoryTitile,
+        brands,
+        status,
+        carModels,
+        isBrandsLoading,
         isCarModelsLoading,
-        isYearsLoading, tags,items,isOpenedSearch,selectedItemModelId,shoppingCart ];
+        isYearsLoading,
+        tags,
+        items,
+        isOpenedSearch,
+        selectedItemModelId,
+        shoppingCart
+      ];
   GlobalState copyWith({
     int? indexPage,
     String? routerName,
     String? categoryTitile,
     List<BrandModel>? brands,
-     GlobalStatus? status,
-     List<CarModelModel>? carModels,
-     String? selectedBrandId,
-     String? selectedCarModelId,
-      int? selectedYearOfConstruction,
-      String? errorMessage,
-       bool? isBrandsLoading,
+    GlobalStatus? status,
+    List<DataCarModel>? carModels,
+    String? selectedBrandId,
+    String? selectedCarModelId,
+    int? selectedYearOfConstruction,
+    String? errorMessage,
+    bool? isBrandsLoading,
     bool? isCarModelsLoading,
     bool? isYearsLoading,
     List<TagModel>? tags,
@@ -68,31 +77,27 @@ part of 'global_bloc.dart';
     bool? isOpenedSearch,
     String? selectedItemModelId,
     List<OrderItemModel>? shoppingCart,
-    
-    
   }) {
     return GlobalState(
       indexPage: indexPage ?? this.indexPage,
       routerName: routerName ?? this.routerName,
       categoryTitile: categoryTitile ?? this.categoryTitile,
       brands: brands ?? this.brands,
-      status: status??this.status,
-      carModels: carModels?? this.carModels,
-      selectedBrandId: selectedBrandId?? this.selectedBrandId,
-      selectedCarModelId: selectedCarModelId?? this.selectedCarModelId,
-      selectedYearOfConstruction: selectedYearOfConstruction?? this.selectedYearOfConstruction,
-      errorMessage: errorMessage?? this.errorMessage,
+      status: status ?? this.status,
+      carModels: carModels ?? this.carModels,
+      selectedBrandId: selectedBrandId ?? this.selectedBrandId,
+      selectedCarModelId: selectedCarModelId ?? this.selectedCarModelId,
+      selectedYearOfConstruction:
+          selectedYearOfConstruction ?? this.selectedYearOfConstruction,
+      errorMessage: errorMessage ?? this.errorMessage,
       isBrandsLoading: isBrandsLoading ?? this.isBrandsLoading,
       isCarModelsLoading: isCarModelsLoading ?? this.isCarModelsLoading,
       isYearsLoading: isYearsLoading ?? this.isYearsLoading,
-      tags: tags?? this.tags,
-      items: items?? this.items,
-      isOpenedSearch: isOpenedSearch?? this.isOpenedSearch,
-      selectedItemModelId: selectedItemModelId?? this.selectedItemModelId,
-      shoppingCart: shoppingCart?? this.shoppingCart,
-    
+      tags: tags ?? this.tags,
+      items: items ?? this.items,
+      isOpenedSearch: isOpenedSearch ?? this.isOpenedSearch,
+      selectedItemModelId: selectedItemModelId ?? this.selectedItemModelId,
+      shoppingCart: shoppingCart ?? this.shoppingCart,
     );
   }
 }
-
-

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:io';
 
 import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/core/services/injection_container.dart';
@@ -73,18 +72,18 @@ class BrandTable extends StatelessWidget {
             scrollDirection: Axis.horizontal, // Enable horizontal scrolling
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('ID')),
+                // DataColumn(label: Text('ID')),
                 DataColumn(label: Text('Name')),
                 DataColumn(label: Text('Image')),
                 DataColumn(label: Text('Actions')),
               ],
               rows: brands.map((brand) {
                 return DataRow(cells: [
-                  DataCell(Text(brand.id.toString())),
+                  // DataCell(Text(brand.id.toString())),
                   DataCell(Text(brand.name)),
                   DataCell(
                     Image.network(
-                      "$baseUrl/${brand.image}",
+                      "$baseUrl${brand.image}",
                       width: 50,
                       height: 50,
                       errorBuilder: (context, error, stackTrace) {
@@ -109,10 +108,13 @@ class BrandTable extends StatelessWidget {
                         icon: const Icon(Icons.edit),
                         onPressed: () {
                           // Open modal for editing brand
-                          showDialog(
+                          showModalBottomSheet(
                             context: context,
-                            builder: (context) => BrandFormModal(
-                              brand: brand,
+                            builder: (context) => BlocProvider.value(
+                              value: sl<DashboardBloc>(),
+                              child: BrandFormModal(
+                                brand: brand,
+                              ),
                             ),
                           );
                         },
@@ -210,7 +212,9 @@ class _BrandFormModalState extends State<BrandFormModal> {
                     ),
                     const SizedBox(height: 16),
                     ImagePickerWidget(
-                      defaultNetworkImage: widget.brand?.image,
+                      defaultNetworkImage: widget.brand != null
+                          ? "$baseUrl${widget.brand!.image}"
+                          : null,
                     ),
                   ],
                 ),
@@ -236,7 +240,7 @@ class _BrandFormModalState extends State<BrandFormModal> {
                         Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('Save'),
+                    child: Text(widget.brand != null ? 'Edit' : 'Save'),
                   ),
                 ],
               ),

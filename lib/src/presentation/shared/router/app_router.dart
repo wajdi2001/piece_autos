@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:piece_autos/core/utils/cache_helper.dart';
-import 'package:piece_autos/src/data/models/item_model.dart';
 import 'package:piece_autos/src/presentation/layouts/admin_dashboard/admin_layout.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/tags_page/tags_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/category_details_page/category_detail_page.dart';
@@ -98,7 +96,6 @@ class AppRouter {
                   builder: (context, state) =>
                       BlocBuilder<GlobalBloc, GlobalState>(
                         builder: (context, state) {
-                          
                           return ProductDetailPage();
                         },
                       )),

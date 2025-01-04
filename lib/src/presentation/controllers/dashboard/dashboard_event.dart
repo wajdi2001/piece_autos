@@ -38,3 +38,21 @@ class DashboardUpsertBrandEvent extends DashboardEvent {
   @override
   List<Object> get props => [name];
 }
+
+class DashboardUpsertCarModelEvent extends DashboardEvent {
+  final String? carModelId;
+
+  final String name;
+  final int yearOfConstruction;
+
+  const DashboardUpsertCarModelEvent(
+      {this.carModelId, required this.name, required this.yearOfConstruction});
+  @override
+  List<Object> get props => [name, yearOfConstruction];
+}
+
+class DashboardChangeSelectedBrandEvent extends DashboardEvent {
+  final String? brandId;
+
+  const DashboardChangeSelectedBrandEvent({required this.brandId});
+}

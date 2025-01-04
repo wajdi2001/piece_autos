@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
@@ -8,11 +7,13 @@ class DashboardState extends Equatable {
   final String currentMenu;
   final ImageData? imageData;
   final String? errorMsg;
+  final String selectedBrandId;
 
   const DashboardState(
       {this.currentMenu = "Brand",
       this.imageData,
       this.status = StateStatus.initial,
+      this.selectedBrandId = "NONE",
       this.errorMsg});
 
   @override
@@ -20,19 +21,22 @@ class DashboardState extends Equatable {
         currentMenu,
         imageData,
         status,
+        selectedBrandId,
       ];
 
-  DashboardState copyWith(
-      {String? currentMenu,
-      ImageData? imageData,
-      StateStatus? status,
-      String? errorMsg}) {
+  DashboardState copyWith({
+    String? currentMenu,
+    ImageData? imageData,
+    StateStatus? status,
+    String? errorMsg,
+    String? selectedBrandId,
+  }) {
     return DashboardState(
-      currentMenu: currentMenu ?? this.currentMenu,
-      imageData: imageData ?? this.imageData,
-      status: status ?? this.status,
-      errorMsg: errorMsg ?? this.errorMsg,
-    );
+        currentMenu: currentMenu ?? this.currentMenu,
+        imageData: imageData ?? this.imageData,
+        status: status ?? this.status,
+        errorMsg: errorMsg ?? this.errorMsg,
+        selectedBrandId: selectedBrandId ?? this.selectedBrandId);
   }
 }
 

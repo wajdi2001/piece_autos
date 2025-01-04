@@ -1,4 +1,3 @@
-
 import '../../../../../core/errors/exceptions.dart';
 import '../../../../../core/services/injection_container.dart';
 import '../../../../../core/utils/dio_helper.dart';
@@ -9,9 +8,6 @@ abstract class CarModelRemoteDataSource {
   Future<DataMap> createOrUpdateCarModel(DataMap params); // For POST
   Future<bool> deleteCarModel(String id); // For DELETE
 }
-
-
-
 
 class CarModelRemoteDataSourceImpl implements CarModelRemoteDataSource {
   final dioHelper = sl<DioHelper>();
@@ -45,7 +41,6 @@ class CarModelRemoteDataSourceImpl implements CarModelRemoteDataSource {
     final response = await dioHelper.postData(
       url: '/api/CarModel/CreateOrUpdate',
       data: params,
-      isFormData: true,
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -60,20 +55,13 @@ class CarModelRemoteDataSourceImpl implements CarModelRemoteDataSource {
 
   @override
   Future<bool> deleteCarModel(String id) async {
-    final response = await dioHelper.deleteData(
-      url: '/api/CarModel/',
-      query: {'id': id},
+    var result = await dioHelper.deleteData(
+      url: '/api/CarModel/$id', // Use the id in the URL path
     );
-
-    if (response.statusCode == 200) {
+    if (result.statusCode == 200) {
       return true;
     }
-
     throw APIException(
-      message: "Operation failed",
-      statusCode: response.statusCode!,
-    );
+        message: "operation has failed", statusCode: result.statusCode!);
   }
 }
-
-

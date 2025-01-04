@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
@@ -38,7 +36,7 @@ class BrandRepositoryImpl implements BrandRepository {
   }
 
   @override
-  ResultFuture<DataMap?> createOrUpdateBrand(DataMap params) async {
+  ResultFuture<BrandModel?> createOrUpdateBrand(DataMap params) async {
     try {
       if (!params.containsKey("name")) {
         return Left(ValidationFailure(message: "Name is required"));
@@ -64,8 +62,10 @@ class BrandRepositoryImpl implements BrandRepository {
       }
 
       var res = await remoteDataSource.createOrUpdateBrand(formData);
-
-      return Right(res);
+      if (res.isNotEmpty) {
+        return Right(BrandModel.fromJson(res));
+      }
+      return Left(InvalidResponseFailure());
     } on APIException catch (e) {
       return Left(APIFailure.fromException(e));
     } catch (e) {

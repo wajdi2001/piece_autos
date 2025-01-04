@@ -33,7 +33,7 @@ class BrandRemoteDataSourceImpl implements BrandRemoteDataSource {
       isFormData: true, // For multipart/form-data
     );
     if (result.statusCode == 200 || result.statusCode == 201) {
-      return result.data;
+      return result.data as Map<String, dynamic>;
     }
     throw APIException(
         message: "operation has failed", statusCode: result.statusCode!);
