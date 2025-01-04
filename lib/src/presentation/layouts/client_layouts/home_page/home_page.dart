@@ -51,8 +51,6 @@ class _HomePageState extends State<HomePage> {
           return Scaffold(
             endDrawer: ShoppingCartDrawer(cartItems: state.shoppingCart, onCheckout: () {
               
-            }, onRemoveItem: (p0) {
-              
             },),
               body: Container(
             decoration: BoxDecoration(

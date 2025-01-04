@@ -16,6 +16,7 @@ class GlobalState extends Equatable {
   final List<ItemModel> items;
   final bool isOpenedSearch;
   final List<OrderItemModel> shoppingCart;
+  final List<TvaModel> tvas;
 
   final GlobalStatus status;
   final List<DataCarModel> carModels;
@@ -39,6 +40,7 @@ class GlobalState extends Equatable {
     this.isOpenedSearch = false,
     this.selectedItemModelId = '',
     this.shoppingCart = const [],
+    this.tvas = const [],
   });
 
   @override
@@ -51,6 +53,7 @@ class GlobalState extends Equatable {
         carModels,
         isBrandsLoading,
         isCarModelsLoading,
+        tvas,
         isYearsLoading,
         tags,
         items,
@@ -58,6 +61,7 @@ class GlobalState extends Equatable {
         selectedItemModelId,
         shoppingCart
       ];
+
   GlobalState copyWith({
     int? indexPage,
     String? routerName,
@@ -77,6 +81,7 @@ class GlobalState extends Equatable {
     bool? isOpenedSearch,
     String? selectedItemModelId,
     List<OrderItemModel>? shoppingCart,
+    List<TvaModel>? tvas,
   }) {
     return GlobalState(
       indexPage: indexPage ?? this.indexPage,
@@ -93,11 +98,14 @@ class GlobalState extends Equatable {
       isBrandsLoading: isBrandsLoading ?? this.isBrandsLoading,
       isCarModelsLoading: isCarModelsLoading ?? this.isCarModelsLoading,
       isYearsLoading: isYearsLoading ?? this.isYearsLoading,
-      tags: tags ?? this.tags,
-      items: items ?? this.items,
-      isOpenedSearch: isOpenedSearch ?? this.isOpenedSearch,
-      selectedItemModelId: selectedItemModelId ?? this.selectedItemModelId,
-      shoppingCart: shoppingCart ?? this.shoppingCart,
+
+      tags: tags?? this.tags,
+      items: items?? this.items,
+      isOpenedSearch: isOpenedSearch?? this.isOpenedSearch,
+      selectedItemModelId: selectedItemModelId?? this.selectedItemModelId,
+      shoppingCart: shoppingCart?? this.shoppingCart,
+      tvas: tvas?? this.tvas,
+    
     );
   }
 }

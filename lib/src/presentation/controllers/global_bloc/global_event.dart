@@ -99,3 +99,7 @@ class GlobalUpdateShoppingCartEvent extends GlobalEvent {
   const GlobalUpdateShoppingCartEvent(
       {required this.item, required this.remove});
 }
+class GlobalGetAllTVAEvent extends GlobalEvent 
+{
+  
+}

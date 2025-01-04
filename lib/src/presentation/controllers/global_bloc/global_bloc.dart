@@ -18,9 +18,11 @@ import 'package:piece_autos/src/domain/usecases/car_model_use_cases/ger_all_car_
 import '../../../../core/services/enums.dart';
 import '../../../../core/services/injection_container.dart';
 import '../../../data/models/item_model.dart';
+import '../../../data/models/tva_model.dart';
 import '../../../domain/usecases/brand_use_cases/get_all_brand.dart';
 import '../../../domain/usecases/item_use_cases/get_all_tems.dart';
 import '../../../domain/usecases/tag_use_cases/get_all_tags.dart';
+import '../../../domain/usecases/tva_use_cases/get_all_tva.dart';
 
 part 'global_event.dart';
 part 'global_state.dart';
@@ -43,11 +45,14 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalSelectItemEvent>(_onSelectItemEvent);
     on<GlobalGetAllItemsAndTagsFromCacheEvent>(
         _onGetAllItemsAndTagsFromCacheEvent);
+
     on<GlobalAddToShoppingCartEvent>(_onAddToShoppingCartEvent);
     on<GlobalUpdateShoppingCartEvent>(_onUpdateShoppingCartEvent);
     on<GlobalDeleteCarModelEvent>(_onGlobalDeleteCarModelEvent);
     on<GlobalCreateOrUpdateCarModelEvent>(_onGlobalCreateOrUpdateCarModelEvent);
+    on<GlobalGetAllTVAEvent>(_onGetAllTVAEvent);
   }
+
 
   void _onNavigatorEvent(
       GlobalNavigatorEvent event, Emitter<GlobalState> emit) {
@@ -324,7 +329,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
               quantity: e.quantity,
               ref: e.ref,
               status: e.status,
-              tvaId: e.tvaId,
+              tvaRate: e.tvaRate,
               tags: e.tags,
             );
           }).toList();
@@ -475,5 +480,38 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     }
 
     emit(state.copyWith(shoppingCart: newList));
+  }
+
+  void _onGetAllTVAEvent(GlobalGetAllTVAEvent event, Emitter<GlobalState> emit)async{
+    emit(state.copyWith(status: GlobalStatus.loading));
+    final getAllTVAUseCase = sl<GetAllTVAsUseCase>();
+    final res = await getAllTVAUseCase();
+
+      // Handle the result using fold
+      res.fold(
+        (failure) {
+          // Emit failure state
+          emit(state.copyWith(
+            status: GlobalStatus.error,
+            errorMessage: failure.message,
+          ));
+        },
+        (items) {
+          List<TvaModel> tvasModel = items.map((e) {
+            return TvaModel(
+              id: e.id,
+              name: e.name,
+              percentage: e.percentage,
+            );
+          }).toList();
+          
+          // Emit success state with transformed items
+          emit(state.copyWith(
+            status: GlobalStatus.loaded,
+            tvas: tvasModel,
+          ));
+        },
+        );
+
   }
 }

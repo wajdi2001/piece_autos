@@ -30,7 +30,7 @@ class _CustomProductImageThumbnailWidgetState
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
               image: NetworkImage(
-                  '$baseUrl/${widget.images[_selectedImageIndex]}'), // Display selected image
+                  '$baseUrl${widget.images[_selectedImageIndex]}'), // Display selected image
               fit: BoxFit.cover,
             ),
           ),
@@ -60,7 +60,7 @@ class _CustomProductImageThumbnailWidgetState
                   ),
                   borderRadius: BorderRadius.circular(10),
                   image: DecorationImage(
-                    image: NetworkImage('$baseUrl/${widget.images[index]}'),
+                    image: NetworkImage('$baseUrl${widget.images[index]}'),
                     fit: BoxFit.cover,
                   ),
                 ),
