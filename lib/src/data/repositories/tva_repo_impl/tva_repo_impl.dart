@@ -19,7 +19,8 @@ class TVARepositoryImpl implements TVARepository {
       final List<TVA> tvaList = [];
       if (result.isNotEmpty && result.containsKey('items')) {
         for (var item in result['items']) {
-          tvaList.add(TvaModel.fromJson(item)); // Assuming `TvaModel` has a `fromJson` method.
+          tvaList.add(TvaModel.fromJson(
+              item)); // Assuming `TvaModel` has a `fromJson` method.
         }
       }
       return Right(tvaList);
@@ -31,10 +32,10 @@ class TVARepositoryImpl implements TVARepository {
   }
 
   @override
-  ResultFuture<String?> createOrUpdateTVA(DataMap params) async {
+  ResultFuture<TvaModel?> createOrUpdateTVA(DataMap params) async {
     try {
       final result = await remoteDataSource.createOrUpdateTVA(params);
-      return Right(result['id']);
+      return Right(TvaModel.fromJson(result));
     } on APIException catch (e) {
       return Left(APIFailure(message: e.message, statusCode: e.statusCode));
     } catch (e) {

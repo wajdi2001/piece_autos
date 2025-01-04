@@ -1,36 +1,27 @@
 import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/tva.dart';
 
-class TvaModel extends TVA{
-  const TvaModel({
-    required super.id, required super.name, required super.percentage
+class TvaModel extends TVA {
+  const TvaModel({required super.id, required super.name, required super.rate});
 
-  });
-  
-  
   TvaModel copyWith({
     String? id,
     String? name,
-    double? percentage,
-    
+    double? rate,
   }) {
     return TvaModel(
-      id: id?? this.id,
-      name: name?? this.name,
-      percentage: percentage?? this.percentage,
-    
+      id: id ?? this.id,
+      name: name ?? this.name,
+      rate: rate ?? this.rate,
     );
-
-    
- 
-}
+  }
 
 //fromJson
   factory TvaModel.fromJson(Map<String, dynamic> json) {
     return TvaModel(
       id: json['id'],
       name: json['name'],
-      percentage: json['percentage'],
+      rate: json['rate'],
     );
   }
   //toJSON
@@ -38,7 +29,7 @@ class TvaModel extends TVA{
     return {
       'id': id,
       'name': name,
-      'percentage': percentage,
+      'rate': rate,
     };
   }
 }

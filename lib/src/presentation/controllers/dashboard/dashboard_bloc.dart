@@ -5,8 +5,10 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/services/injection_container.dart';
 import 'package:piece_autos/core/utils/typedef.dart';
+import 'package:piece_autos/src/domain/entities/brand.dart';
 import 'package:piece_autos/src/domain/usecases/brand_use_cases/create_or_update_brand.dart';
 import 'package:piece_autos/src/domain/usecases/car_model_use_cases/create_or_update.dart';
+import 'package:piece_autos/src/domain/usecases/tva_use_cases/create_or_update.dart';
 import 'package:piece_autos/src/presentation/controllers/dashboard/dashboard_state.dart';
 import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc.dart';
 
@@ -21,9 +23,15 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     on<DashboardSelectImageEvent>(onDashboardSelectImage);
     on<DashboardUpsertBrandEvent>(onDashboardUpsertBrand);
     on<DashboardChangeSelectedBrandEvent>(onDashboardChangeSelectedBrandEvent);
-    on<DashboardUpsertCarModelEvent>(
-      onDashboardUpsertCarModelEvent,
-    );
+    on<DashboardUpsertCarModelEvent>(onDashboardUpsertCarModelEvent);
+    on<DashboardChangeSelectedBrandTypeEvent>(
+        _onDashboardChangeSelectedBrandTypeEvent);
+    on<DashboardUpsertTvaModelEvent>(_onDashboardUpsertTvaModelEvent);
+  }
+
+  FutureOr<void> _onDashboardChangeSelectedBrandTypeEvent(
+      DashboardChangeSelectedBrandTypeEvent event, emit) {
+    emit(state.copyWith(brandType: BrandType.values[event.brandTypeIndex]));
   }
 
   FutureOr<void> onDashboardChangeSelectedBrandEvent(
@@ -56,6 +64,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       "name": event.name,
       "id": event.brandId,
       "image": state.imageData,
+      "brandType": state.selectedBrandType.index,
     };
 
     final result = await upsertBrandUserCase(request);
@@ -87,6 +96,27 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }, (r) {
       if (r != null) {
         _globalBloc.add(GlobalCreateOrUpdateCarModelEvent(carModel: r));
+      }
+    });
+  }
+
+  FutureOr<void> _onDashboardUpsertTvaModelEvent(
+      DashboardUpsertTvaModelEvent event, Emitter<DashboardState> emit) async {
+    emit(state.copyWith(status: StateStatus.loading));
+    final createOrUpdateTvaModelUseCase = sl<CreateOrUpdateTVAUseCase>();
+    final DataMap request = {
+      "id": event.tvaId,
+      "name": event.name,
+      "rate": event.rate,
+    };
+
+    final result = await createOrUpdateTvaModelUseCase(request);
+    result.fold((f) {
+      emit(
+          state.copyWith(status: StateStatus.failed, errorMsg: f.errorMessage));
+    }, (r) {
+      if (r != null) {
+        _globalBloc.add(GlobalCreateOrUpdateTvaModelEvent(tvaModel: r));
       }
     });
   }

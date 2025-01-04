@@ -4,40 +4,49 @@ import 'package:piece_autos/core/utils/typedef.dart';
 import 'package:piece_autos/src/domain/entities/brand.dart';
 
 class BrandModel extends Brand {
-  const BrandModel({required super.id, required super.name, super.image});
+  const BrandModel({
+    required super.id,
+    required super.name,
+    super.image,
+    super.brandType,
+  });
 
   BrandModel copyWith({
     String? id,
     String? name,
     String? image,
+    BrandType? brandType,
   }) {
     return BrandModel(
       id: id ?? super.id,
       name: name ?? super.name,
       image: image ?? super.image,
+      brandType: brandType ?? this.brandType,
     );
   }
 
   factory BrandModel.fromJson(DataMap json) {
     return BrandModel(
-      id: json['id'],
-      name: json['name'],
-      image: json['imageUrl'],
-    );
+        id: json['id'],
+        name: json['name'],
+        image: json['imageUrl'],
+        brandType: BrandType.values[json['brandType']]);
   }
   DataMap toJson() {
     return {
       'id': id,
       'name': name,
       'imageUrl': image,
+      'brandType': brandType.index,
     };
   }
 
-    String toJson1() {
+  String toJson1() {
     return jsonEncode({
       'id': id,
       'name': name,
       'imageUrl': image,
+      'brandType': brandType.index
     });
   }
 
@@ -47,6 +56,7 @@ class BrandModel extends Brand {
       id: json['id'],
       name: json['name'],
       image: json['imageUrl'],
+      brandType: BrandType.values[json['brandType']],
     );
   }
 }

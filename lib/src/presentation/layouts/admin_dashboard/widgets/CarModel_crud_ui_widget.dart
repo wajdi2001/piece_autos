@@ -69,45 +69,62 @@ class CarModelTable extends StatelessWidget {
         } else if (state.status == GlobalStatus.loaded) {
           final carModels = state.carModels;
           final bloc = GlobalBloc.get(context);
-          return DataTable(
-            columns: const [
-              // DataColumn(label: Text('ID')),
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Year of Construction')),
-              DataColumn(label: Text('Brand Name')),
-              DataColumn(label: Text('Actions')),
-            ],
-            rows: carModels.map((carModel) {
-              return DataRow(cells: [
-                // DataCell(Text(carModel.id)),
-                DataCell(Text(carModel.name)),
-                DataCell(Text(carModel.yearOfConstruction.toString())),
-                DataCell(Text(bloc.getBrandNameById(carModel.brandId) ?? "")),
-                DataCell(Row(
-                  children: [
-                    IconButton(
-                        icon: Icon(Icons.edit),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) => BlocProvider.value(
-                              value: sl<DashboardBloc>(),
-                              child: CarModelFormModal(
-                                carModel: carModel,
+
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final isSmallScreen = constraints.maxWidth < 600;
+
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal, // Enable horizontal scrolling
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  child: DataTable(
+                    columnSpacing: isSmallScreen
+                        ? 20
+                        : 40, // Adjust spacing based on screen size
+                    columns: const [
+                      DataColumn(label: Text('Name')),
+                      DataColumn(label: Text('Year of Construction')),
+                      DataColumn(label: Text('Brand Name')),
+                      DataColumn(label: Text('Actions')),
+                    ],
+                    rows: carModels.map((carModel) {
+                      return DataRow(cells: [
+                        DataCell(Text(carModel.name)),
+                        DataCell(Text(carModel.yearOfConstruction.toString())),
+                        DataCell(Text(
+                            bloc.getBrandNameById(carModel.brandId) ?? "")),
+                        DataCell(Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => BlocProvider.value(
+                                    value: sl<DashboardBloc>(),
+                                    child: CarModelFormModal(
+                                      carModel: carModel,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () => sl<GlobalBloc>().add(
+                                GlobalDeleteCarModelEvent(
+                                    carModelId: carModel.id),
                               ),
                             ),
-                          );
-                        }),
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () => sl<GlobalBloc>().add(
-                        GlobalDeleteCarModelEvent(carModelId: carModel.id),
-                      ),
-                    ),
-                  ],
-                )),
-              ]);
-            }).toList(),
+                          ],
+                        )),
+                      ]);
+                    }).toList(),
+                  ),
+                ),
+              );
+            },
           );
         }
         return const SizedBox();

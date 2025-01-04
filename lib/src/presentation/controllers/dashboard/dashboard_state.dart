@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:equatable/equatable.dart';
+import 'package:piece_autos/src/domain/entities/brand.dart';
 
 class DashboardState extends Equatable {
   final StateStatus status;
@@ -8,13 +9,16 @@ class DashboardState extends Equatable {
   final ImageData? imageData;
   final String? errorMsg;
   final String selectedBrandId;
+  final BrandType selectedBrandType;
 
-  const DashboardState(
-      {this.currentMenu = "Brand",
-      this.imageData,
-      this.status = StateStatus.initial,
-      this.selectedBrandId = "NONE",
-      this.errorMsg});
+  const DashboardState({
+    this.currentMenu = "Brand",
+    this.imageData,
+    this.status = StateStatus.initial,
+    this.selectedBrandId = "NONE",
+    this.errorMsg,
+    this.selectedBrandType = BrandType.car,
+  });
 
   @override
   List<Object?> get props => [
@@ -22,6 +26,7 @@ class DashboardState extends Equatable {
         imageData,
         status,
         selectedBrandId,
+        selectedBrandType,
       ];
 
   DashboardState copyWith({
@@ -30,13 +35,16 @@ class DashboardState extends Equatable {
     StateStatus? status,
     String? errorMsg,
     String? selectedBrandId,
+    BrandType? brandType,
   }) {
     return DashboardState(
-        currentMenu: currentMenu ?? this.currentMenu,
-        imageData: imageData ?? this.imageData,
-        status: status ?? this.status,
-        errorMsg: errorMsg ?? this.errorMsg,
-        selectedBrandId: selectedBrandId ?? this.selectedBrandId);
+      currentMenu: currentMenu ?? this.currentMenu,
+      imageData: imageData ?? this.imageData,
+      status: status ?? this.status,
+      errorMsg: errorMsg ?? this.errorMsg,
+      selectedBrandId: selectedBrandId ?? this.selectedBrandId,
+      selectedBrandType: brandType ?? selectedBrandType,
+    );
   }
 }
 

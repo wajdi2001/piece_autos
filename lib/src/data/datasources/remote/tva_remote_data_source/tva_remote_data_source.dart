@@ -14,61 +14,36 @@ class TVARemoteDataSourceImpl implements TVARemoteDataSource {
 
   @override
   Future<DataMap> getAllTVAs(DataMap params) async {
-    try {
-      final response = await dioHelper.getData(url: '/api/TVA', query: params);
-      if (response.statusCode == 200) {
-        return response.data;
-      } else {
-        throw APIException(
-          message: 'Failed to fetch TVAs',
-          statusCode: response.statusCode ?? 500,
-        );
-      }
-    } catch (e) {
+    final response =
+        await dioHelper.getData(url: '/api/Tva/GetAll', query: params);
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
       throw APIException(
-        message: e.toString(),
-        statusCode: 500,
+        message: 'Failed to fetch TVAs',
+        statusCode: response.statusCode ?? 500,
       );
     }
   }
 
   @override
   Future<DataMap> createOrUpdateTVA(DataMap params) async {
-    try {
-      final response = await dioHelper.postData(url: '/api/TVA', data: params);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data;
-      } else {
-        throw APIException(
-          message: 'Failed to create or update TVA',
-          statusCode: response.statusCode ?? 500,
-        );
-      }
-    } catch (e) {
-      throw APIException(
-        message: e.toString(),
-        statusCode: 500,
-      );
+    final response =
+        await dioHelper.postData(url: '/api/Tva/CreateOrUpdate', data: params);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return response.data;
     }
+    throw APIException(
+        message: "operation has failed", statusCode: response.statusCode!);
   }
 
   @override
   Future<bool> deleteTVA(String id) async {
-    try {
-      final response = await dioHelper.deleteData(url: '/api/TVA/$id');
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        throw APIException(
-          message: 'Failed to delete TVA',
-          statusCode: response.statusCode ?? 500,
-        );
-      }
-    } catch (e) {
-      throw APIException(
-        message: e.toString(),
-        statusCode: 500,
-      );
+    final result = await dioHelper.deleteData(url: '/api/Tva/$id');
+    if (result.statusCode == 200) {
+      return true;
     }
+    throw APIException(
+        message: "operation has failed", statusCode: result.statusCode!);
   }
 }

@@ -18,7 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = const AppBlocObserver();
   di.init();
-  CacheHelper.init();
+  await CacheHelper.init();
   if (kDebugMode) {
     try {
       final authRemoteDataSource = sl<AuthRemoteDataSource>();

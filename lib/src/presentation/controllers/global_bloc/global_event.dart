@@ -42,6 +42,12 @@ class GlobalDeleteBrandEvent extends GlobalEvent {
   GlobalDeleteBrandEvent({required this.brandId});
 }
 
+class GlobalDeleteTvaEvent extends GlobalEvent {
+  final String tvaId;
+
+  GlobalDeleteTvaEvent({required this.tvaId});
+}
+
 class GlobalDeleteCarModelEvent extends GlobalEvent {
   final String carModelId;
 
@@ -93,13 +99,16 @@ class GlobalCreateOrUpdateCarModelEvent extends GlobalEvent {
   GlobalCreateOrUpdateCarModelEvent({required this.carModel});
 }
 
+class GlobalCreateOrUpdateTvaModelEvent extends GlobalEvent {
+  final TvaModel tvaModel;
+  GlobalCreateOrUpdateTvaModelEvent({required this.tvaModel});
+}
+
 class GlobalUpdateShoppingCartEvent extends GlobalEvent {
   final OrderItemModel item;
   final bool remove;
   const GlobalUpdateShoppingCartEvent(
       {required this.item, required this.remove});
 }
-class GlobalGetAllTVAEvent extends GlobalEvent 
-{
-  
-}
+
+class GlobalGetAllTVAEvent extends GlobalEvent {}

@@ -14,6 +14,7 @@ import 'package:piece_autos/src/data/models/tag_model.dart';
 import 'package:piece_autos/src/domain/usecases/car_model_use_cases/delete_car_model.dart';
 
 import 'package:piece_autos/src/domain/usecases/car_model_use_cases/ger_all_car_models.dart';
+import 'package:piece_autos/src/domain/usecases/tva_use_cases/delete_tva.dart';
 
 import '../../../../core/services/enums.dart';
 import '../../../../core/services/injection_container.dart';
@@ -51,8 +52,9 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     on<GlobalDeleteCarModelEvent>(_onGlobalDeleteCarModelEvent);
     on<GlobalCreateOrUpdateCarModelEvent>(_onGlobalCreateOrUpdateCarModelEvent);
     on<GlobalGetAllTVAEvent>(_onGetAllTVAEvent);
+    on<GlobalCreateOrUpdateTvaModelEvent>(_onGlobalCreateOrUpdateTvaModelEvent);
+    on<GlobalDeleteTvaEvent>(_onGlobalDeleteTvaEvent);
   }
-
 
   void _onNavigatorEvent(
       GlobalNavigatorEvent event, Emitter<GlobalState> emit) {
@@ -423,15 +425,20 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     if (indexOfBrandModel != -1) {
       BrandModel relatedBrand = state.brands[indexOfBrandModel];
       relatedBrand = relatedBrand.copyWith(
-          name: event.brandModel.name, image: event.brandModel.image);
+        name: event.brandModel.name,
+        image: event.brandModel.image,
+        brandType: event.brandModel.brandType,
+      );
       final updatedList = List<BrandModel>.from(state.brands);
       updatedList[indexOfBrandModel] = relatedBrand;
       emit(state.copyWith(status: GlobalStatus.loaded, brands: updatedList));
     } else {
       var brandModel = BrandModel(
-          id: event.brandModel.id,
-          name: event.brandModel.name,
-          image: event.brandModel.image);
+        id: event.brandModel.id,
+        name: event.brandModel.name,
+        image: event.brandModel.image,
+        brandType: event.brandModel.brandType,
+      );
       final updatedList = List<BrandModel>.from(state.brands);
       updatedList.add(brandModel);
       emit(state.copyWith(status: GlobalStatus.loaded, brands: updatedList));
@@ -482,36 +489,79 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
     emit(state.copyWith(shoppingCart: newList));
   }
 
-  void _onGetAllTVAEvent(GlobalGetAllTVAEvent event, Emitter<GlobalState> emit)async{
+  void _onGetAllTVAEvent(
+      GlobalGetAllTVAEvent event, Emitter<GlobalState> emit) async {
     emit(state.copyWith(status: GlobalStatus.loading));
     final getAllTVAUseCase = sl<GetAllTVAsUseCase>();
     final res = await getAllTVAUseCase();
 
-      // Handle the result using fold
-      res.fold(
-        (failure) {
-          // Emit failure state
-          emit(state.copyWith(
-            status: GlobalStatus.error,
-            errorMessage: failure.message,
-          ));
-        },
-        (items) {
-          List<TvaModel> tvasModel = items.map((e) {
-            return TvaModel(
-              id: e.id,
-              name: e.name,
-              percentage: e.percentage,
-            );
-          }).toList();
-          
-          // Emit success state with transformed items
-          emit(state.copyWith(
-            status: GlobalStatus.loaded,
-            tvas: tvasModel,
-          ));
-        },
-        );
+    // Handle the result using fold
+    res.fold(
+      (failure) {
+        // Emit failure state
+        emit(state.copyWith(
+          status: GlobalStatus.error,
+          errorMessage: failure.message,
+        ));
+      },
+      (items) {
+        List<TvaModel> tvasModel = items.map((e) {
+          return TvaModel(
+            id: e.id,
+            name: e.name,
+            rate: e.rate,
+          );
+        }).toList();
 
+        // Emit success state with transformed items
+        emit(state.copyWith(
+          status: GlobalStatus.loaded,
+          tvas: tvasModel,
+        ));
+      },
+    );
+  }
+
+  FutureOr<void> _onGlobalCreateOrUpdateTvaModelEvent(
+      GlobalCreateOrUpdateTvaModelEvent event, Emitter<GlobalState> emit) {
+    emit(state.copyWith(status: GlobalStatus.loading));
+    final indexOfTvaModel =
+        state.tvas.indexWhere((elt) => elt.id == event.tvaModel.id);
+    if (indexOfTvaModel != -1) {
+      TvaModel relatedTvaModel = state.tvas[indexOfTvaModel];
+      relatedTvaModel = relatedTvaModel.copyWith(
+        name: event.tvaModel.name,
+        rate: event.tvaModel.rate,
+      );
+      final updatedList = List<TvaModel>.from(state.tvas);
+      updatedList[indexOfTvaModel] = relatedTvaModel;
+      emit(state.copyWith(status: GlobalStatus.loaded, tvas: updatedList));
+    } else {
+      var carModel = TvaModel(
+        id: event.tvaModel.id,
+        name: event.tvaModel.name,
+        rate: event.tvaModel.rate,
+      );
+      final updatedList = List<TvaModel>.from(state.tvas);
+      updatedList.add(carModel);
+      emit(state.copyWith(status: GlobalStatus.loaded, tvas: updatedList));
+    }
+  }
+
+  FutureOr<void> _onGlobalDeleteTvaEvent(
+      GlobalDeleteTvaEvent event, Emitter<GlobalState> emit) async {
+    final deleteTvaUserCase = sl<DeleteTVAUseCase>();
+    emit(state.copyWith(status: GlobalStatus.loading));
+    var result = await deleteTvaUserCase(event.tvaId);
+    result.fold((f) {
+      emit(state.copyWith(
+          status: GlobalStatus.error, errorMessage: f.errorMessage));
+    }, (hasBeenDeleted) {
+      if (hasBeenDeleted) {
+        final updatedTvas =
+            state.tvas.where((x) => x.id != event.tvaId).toList();
+        emit(state.copyWith(tvas: updatedTvas, status: GlobalStatus.loaded));
+      }
+    });
   }
 }
