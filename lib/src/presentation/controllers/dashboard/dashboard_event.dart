@@ -68,7 +68,7 @@ class DashboardChangeSelectedBrandEvent extends DashboardEvent {
 }
 
 class DashboardChangeSelectedBrandTypeEvent extends DashboardEvent {
-  final int brandTypeIndex;
+  final BrandType brandTypeIndex;
 
   const DashboardChangeSelectedBrandTypeEvent({required this.brandTypeIndex});
 }

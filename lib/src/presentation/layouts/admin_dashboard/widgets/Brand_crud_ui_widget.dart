@@ -170,6 +170,8 @@ class _BrandFormModalState extends State<BrandFormModal> {
     if (widget.brand != null) {
       // Pre-fill the form for editing
       _nameController.text = widget.brand!.name;
+      sl<DashboardBloc>().add(DashboardChangeSelectedBrandTypeEvent(
+          brandTypeIndex: widget.brand!.brandType));
     }
   }
 
@@ -220,48 +222,64 @@ class _BrandFormModalState extends State<BrandFormModal> {
                       autofocus: true,
                     ),
                     const SizedBox(height: 16),
-                    ImagePickerWidget(
-                      defaultNetworkImage: widget.brand != null
-                          ? "$baseUrl${widget.brand!.image}"
-                          : null,
+                    Center(
+                      child: ImagePickerWidget(
+                        defaultNetworkImage: widget.brand != null
+                            ? "$baseUrl${widget.brand!.image}"
+                            : null,
+                      ),
                     ),
-                    DecoratedBox(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(color: Colors.blueGrey, width: 2),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Text("Type:"),
+                        SizedBox(
+                          width: 10,
                         ),
-                        child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            child: BlocBuilder<DashboardBloc, DashboardState>(
-                              builder: (context, state) {
-                                final bloc = DashboardBloc.get(context);
-                                return DropdownButton(
-                                  underline: Container(),
-                                  isExpanded: true,
-                                  borderRadius: BorderRadius.circular(5),
-                                  items: BrandType.values
-                                      .map(
-                                        (e) => DropdownMenuItem(
-                                          value: e.index,
-                                          child: Center(
-                                            child: Text(
-                                              e.name,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .titleMedium,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                      .toList(),
-                                  value: bloc.state.selectedBrandId,
-                                  onChanged: (value) => bloc.add(
-                                      DashboardChangeSelectedBrandTypeEvent(
-                                          brandTypeIndex: value as int)),
-                                );
-                              },
-                            )))
+                        Expanded(
+                          child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                    color: Colors.blueGrey, width: 2),
+                              ),
+                              child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 5),
+                                  child: BlocBuilder<DashboardBloc,
+                                      DashboardState>(
+                                    builder: (context, state) {
+                                      final bloc = DashboardBloc.get(context);
+                                      return DropdownButton(
+                                        underline: Container(),
+                                        isExpanded: true,
+                                        borderRadius: BorderRadius.circular(5),
+                                        items: BrandType.values
+                                            .map(
+                                              (e) => DropdownMenuItem(
+                                                value: e,
+                                                child: Center(
+                                                  child: Text(
+                                                    e.name,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleMedium,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                        value: bloc.state.selectedBrandType,
+                                        onChanged: (value) => bloc.add(
+                                            DashboardChangeSelectedBrandTypeEvent(
+                                                brandTypeIndex:
+                                                    value as BrandType)),
+                                      );
+                                    },
+                                  ))),
+                        ),
+                      ],
+                    )
                   ],
                 ),
               ),

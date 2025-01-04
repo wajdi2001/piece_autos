@@ -44,9 +44,10 @@ class BrandRepositoryImpl implements BrandRepository {
       FormData formData = FormData.fromMap({
         "id": params['id'],
         "name": params['name'],
+        "brandType": params['brandType']
       });
 
-      if (params.containsKey("image")) {
+      if (params.containsKey("image") && params['image'] != null) {
         final file = params['image'] as ImageData;
         formData.files.add(
           MapEntry(

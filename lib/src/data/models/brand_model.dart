@@ -8,7 +8,7 @@ class BrandModel extends Brand {
     required super.id,
     required super.name,
     super.image,
-    super.brandType,
+    required super.brandType,
   });
 
   BrandModel copyWith({

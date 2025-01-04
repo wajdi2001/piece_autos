@@ -31,7 +31,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
 
   FutureOr<void> _onDashboardChangeSelectedBrandTypeEvent(
       DashboardChangeSelectedBrandTypeEvent event, emit) {
-    emit(state.copyWith(brandType: BrandType.values[event.brandTypeIndex]));
+    emit(state.copyWith(brandType: event.brandTypeIndex));
   }
 
   FutureOr<void> onDashboardChangeSelectedBrandEvent(

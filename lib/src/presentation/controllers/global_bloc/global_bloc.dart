@@ -82,7 +82,12 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
       (failure) => emit(state.copyWith(isBrandsLoading: false)),
       (brands) {
         List<BrandModel> brandsModel = brands.map((e) {
-          return BrandModel(id: e.id, image: e.image, name: e.name);
+          return BrandModel(
+            id: e.id,
+            image: e.image,
+            name: e.name,
+            brandType: e.brandType,
+          );
         }).toList();
 
         // Save to cache
