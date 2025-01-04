@@ -96,3 +96,7 @@ class GlobalUpdateShoppingCartEvent extends GlobalEvent
   final bool remove;
   const GlobalUpdateShoppingCartEvent({required this.item,required this.remove});
 }
+class GlobalGetAllTVAEvent extends GlobalEvent 
+{
+  
+}

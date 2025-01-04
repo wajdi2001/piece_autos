@@ -31,7 +31,7 @@ class CustomCategoryItemWidget extends StatelessWidget {
         children: [
           // Exemple d'image d'article
           Image.network(
-            '$baseUrl/${itemModel.images[0]}',
+            '$baseUrl${itemModel.images[0]}',
             height: 80,
             fit: BoxFit.contain,
           ),

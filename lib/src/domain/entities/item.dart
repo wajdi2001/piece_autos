@@ -13,7 +13,7 @@ abstract class Item extends Equatable {
   final ItemStatus status;
   final int quantity;
   final int? availableIn;
-  final String tvaId;
+  final double tvaRate;
   final List<String>? adaptableCarModels;
   final Map<String, String>? description;
   final List<String>? tags;
@@ -30,7 +30,7 @@ abstract class Item extends Equatable {
     required this.status,
     required this.quantity,
     this.availableIn,
-    required this.tvaId,
+    required this.tvaRate,
     this.adaptableCarModels,
     this.description,
     this.tags,
@@ -49,7 +49,7 @@ abstract class Item extends Equatable {
         status,
         quantity,
         availableIn ?? 0,
-        tvaId,
+        tvaRate,
         adaptableCarModels ?? [],
         description ?? {},
         tags ?? [],

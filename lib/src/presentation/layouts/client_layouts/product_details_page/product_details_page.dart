@@ -86,7 +86,7 @@ class ProductDetailPage extends StatelessWidget {
                   flex: ResponsiveBreakpoints.of(context).isMobile ||
                           ResponsiveBreakpoints.of(context).isPhone ||
                           ResponsiveBreakpoints.of(context).isTablet
-                      ? 1
+                      ? 2
                       : 2,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class ProductDetailPage extends StatelessWidget {
                                 ),
                                 if (ResponsiveBreakpoints.of(context).isDesktop)
                                   Expanded(
-                                    flex: 3,
+                                    flex: 2,
                                     child: CustomProductCaractristqueWidget(
                                       itemModel: itemModel,
                                     ),

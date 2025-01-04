@@ -26,3 +26,10 @@ enum GlobalStatus{
   loaded,
     error
 }
+enum AuthStatus{
+  initial,
+  initialLoaded,
+  loading,
+  loaded,
+    error
+}
