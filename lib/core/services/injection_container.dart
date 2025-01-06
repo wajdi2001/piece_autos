@@ -34,6 +34,7 @@ import '../../src/domain/usecases/tag_use_cases/get_all_tags.dart';
 import '../../src/domain/usecases/tva_use_cases/create_or_update.dart';
 import '../../src/domain/usecases/tva_use_cases/delete_tva.dart';
 import '../../src/domain/usecases/tva_use_cases/get_all_tva.dart';
+import '../../src/presentation/controllers/auth_bloc/auth_bloc.dart';
 import '../../src/presentation/controllers/global_bloc/global_bloc.dart';
 
 final sl = GetIt.instance;
@@ -49,6 +50,7 @@ void init() async {
   sl.registerLazySingleton<GlobalBloc>(() => GlobalBloc());
 
   sl.registerLazySingleton<DashboardBloc>(() => DashboardBloc(sl()));
+  sl.registerLazySingleton<AuthBloc>(() => AuthBloc());
 
   /// Auth
   // Data sources
