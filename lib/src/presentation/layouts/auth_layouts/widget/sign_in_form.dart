@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piece_autos/src/presentation/controllers/auth_bloc/auth_bloc.dart';
 import 'package:piece_autos/src/presentation/layouts/auth_layouts/widget/custom_text_field.dart';
 
 class SignInForm extends StatelessWidget {
@@ -35,13 +37,19 @@ class SignInForm extends StatelessWidget {
                   ],
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () 
+                  {
+                  },
                   child: const Text("mot de passe oublié?"),
                 ),
               ],
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () 
+              {
+                                    context.read<AuthBloc>().add(AuthLoginEvent(email: emailController.text, password: passwordController.text,rememberMe: true ));
+
+              },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 48),
               ),

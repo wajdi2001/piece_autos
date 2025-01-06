@@ -5,7 +5,7 @@ import '../../../../../core/utils/typedef.dart';
 
 abstract class AuthRemoteDataSource {
   Future<void> signUp(DataMap params); // For SignUp API call
-  Future<void> signIn(DataMap params); // For SignIn API call
+  Future<DataMap> signIn(DataMap params); // For SignIn API call
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -36,13 +36,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<void> signIn(DataMap params) async {
+  Future<DataMap> signIn(DataMap params) async {
     try {
       final response = await dioHelper.postData(
         url: '/api/Auth/SignIn',
         data: params,
       );
-
+      if (response.statusCode == 200) {
+      return response.data;
+    }
       if (response.statusCode != 200) {
         throw APIException(
           message: 'Failed to sign in',
@@ -51,6 +53,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
       final token = response.data['token'];
       dioHelper.setToken(token);
+      return response.data;
     } catch (e) {
       throw APIException(
         message: e.toString(),

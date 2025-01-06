@@ -33,10 +33,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  ResultFuture<Unit> signIn(DataMap params) async {
+  ResultFuture<DataMap> signIn(DataMap params) async {
     try {
-      await remoteDataSource.signIn(params);
-      return Right(unit); // Return success
+      DataMap res = await remoteDataSource.signIn(params);
+      return Right(res); // Return success
     } on APIException catch (e) {
       return Left(
         APIFailure(
