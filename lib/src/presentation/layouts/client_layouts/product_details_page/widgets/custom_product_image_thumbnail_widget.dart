@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:piece_autos/core/utils/constants.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../../../shared/constants/app_colors.dart';
+
 class CustomProductImageThumbnailWidget extends StatefulWidget {
   final List<String> images;
 
@@ -25,8 +27,9 @@ class _CustomProductImageThumbnailWidgetState
       children: [
         // Main Image Display
         Container(
-          height: ResponsiveBreakpoints.of(context).isDesktop ? 400 : 300,
+          height:  300,
           decoration: BoxDecoration(
+            color: AppColors.widgetBackground,
             borderRadius: BorderRadius.circular(10),
             image: DecorationImage(
               image: NetworkImage(

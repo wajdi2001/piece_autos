@@ -7,7 +7,9 @@ import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/home_app_bar_widget.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/home_drawer.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/service_widget.dart';
-import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/widgets/shoppig_cart.dart';
+import 'package:piece_autos/src/presentation/layouts/client_layouts/checkout_page/shoppig_cart.dart';
+import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
+import 'package:piece_autos/src/presentation/shared/router/app_router.dart';
 
 import 'widgets/contact_footer_Widget.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -50,21 +52,24 @@ class _HomePageState extends State<HomePage> {
         builder: (context, state) {
           return Scaffold(
             endDrawer: ShoppingCartDrawer(cartItems: state.shoppingCart, onCheckout: () {
+            //  widget.navigationShell.goBranch(4);
+            AppRouter.router.go(AppRouter.checkoutRoute);
               
             },),
               body: Container(
             decoration: BoxDecoration(
-              image: DecorationImage(
+              gradient: AppColors.mainGradient,
+             /* image: DecorationImage(
                 image: AssetImage('assets/images/mechanical_back.jpg'),
                 fit: BoxFit.cover,
-              ),
+              ),*/
             ),
             child: ListView(children: [
               HomeAppBarWidget(navToProductPage:() {
                 widget.navigationShell.goBranch(3);
               } ,)
                 ..animate()
-                    .fadeIn(duration: 600.ms, delay: 100.ms)
+                    .fadeIn(duration: 380.ms, delay: 50.ms)
                     .slideY(begin: -0.2, end: 0),
               SizedBox(height: 10),
               //state.indexPage.getHomePageBody(),
@@ -72,12 +77,12 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 20),
               ServiceWidget()
                   .animate()
-                  .fadeIn(duration: 600.ms, delay: 100.ms)
+                  .fadeIn(duration: 380.ms, delay: 50.ms)
                   .slideY(begin: -0.2, end: 0),
               SizedBox(height: 20),
               ContactFooter()
                   .animate()
-                  .fadeIn(duration: 600.ms, delay: 200.ms)
+                  .fadeIn(duration: 380.ms, delay: 50.ms)
                   .slideY(begin: -0.2, end: 0),
             ]),
           ),

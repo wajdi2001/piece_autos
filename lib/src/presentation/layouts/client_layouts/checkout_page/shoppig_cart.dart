@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/utils/cache_helper.dart';
 import 'package:piece_autos/core/utils/constants.dart';
-import '../../../../../data/models/item_model.dart';
-import '../../../../../data/models/order_item_model.dart';
-import '../../../../controllers/global_bloc/global_bloc.dart';
-import '../../../../shared/utility/methodes.dart';
+import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
+import '../../../../data/models/item_model.dart';
+import '../../../../data/models/order_item_model.dart';
+import '../../../controllers/global_bloc/global_bloc.dart';
+import '../../../shared/utility/methodes.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ShoppingCartDrawer extends StatelessWidget {
@@ -35,9 +36,12 @@ class ShoppingCartDrawer extends StatelessWidget {
             children: [
               // Header
               Container(
+                decoration: BoxDecoration(
+                  gradient: AppColors.mainGradient
+                ),
                 padding: const EdgeInsets.all(16.0),
                 alignment: Alignment.centerLeft,
-                color: Colors.grey[800],
+                
                 child: const Text(
                   'Panier',
                   style: TextStyle(
@@ -226,7 +230,7 @@ class ShoppingCartDrawer extends StatelessWidget {
                                     .read<GlobalBloc>()
                                     .add(GlobalGetAllTVAEvent());*/
         
-                                final pdf = await generateTicketPDF(
+                               /* final pdf = await generateTicketPDF(
                                   cartItems: cartItems,
                                   items: items,
                                 );
@@ -240,16 +244,22 @@ class ShoppingCartDrawer extends StatelessWidget {
                                   } catch (e) {
                                     print("Error saving PDF: $e");
                                   }
-                                }
+                                }*/
+
+
+
+                                onCheckout();
+
+
                               },
                               style: ElevatedButton.styleFrom(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 16.0),
-                                backgroundColor: Colors.blue,
+                                backgroundColor: AppColors.primaryButtonColor,
                               ),
-                              child: const Text(
+                              child:  Text(
                                 'Proceed to Checkout',
-                                style: TextStyle(fontSize: 16.0,color: Colors.white),
+                                style: TextStyle(fontSize: 16.0,color: AppColors.primaryButtonTextColor,),
                               ),
                             ),
                           );

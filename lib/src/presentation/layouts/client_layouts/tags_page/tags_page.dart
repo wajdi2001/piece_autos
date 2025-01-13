@@ -41,44 +41,58 @@ class TagsPage extends StatelessWidget {
             child: Text("No tags available. Please try again later."),
           );
         }
-        return state.status==GlobalStatus.loading? CircularProgressIndicator(): Container(
-          height: categories.length * 100,
-          width: double.infinity,
-          margin: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.white.withAlpha(128), // 50% opacity
-                  Colors.white.withAlpha(77),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+        int rowFactor=(state.brands.length/7).ceil();
+        int spacingFactor =rowFactor>1?((rowFactor-1)*20):0;
+        return state.status==GlobalStatus.loading? CircularProgressIndicator(): Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+               Text("Categories:",style: TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),),
+                  const SizedBox(height: 10,),
+              Container(
+                height:rowFactor * 204+ spacingFactor.toDouble()+30,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withAlpha(128), // 50% opacity
+                        Colors.white.withAlpha(77),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 15),
+                  child: Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: ResponsiveBreakpoints.of(context).isDesktop
+                            ? 7
+                            : ResponsiveBreakpoints.of(context).isTablet
+                                ? 4
+                                : 2, // Deux colonnes
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        childAspectRatio: ResponsiveBreakpoints.of(context).isDesktop
+                            ? 1
+                            : ResponsiveBreakpoints.of(context).isTablet
+                                ? 1
+                                : 1, // Ajuste la taille des cartes
+                      ),
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        final category = categories[index];
+                        return CustomItemWidget(
+                            tag: category, onTapCategory: onTapCategory);
+                      },
+                    ),
+                  ),
+                ),
               ),
-              borderRadius: BorderRadius.circular(10)),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: ResponsiveBreakpoints.of(context).isDesktop
-                    ? 6
-                    : ResponsiveBreakpoints.of(context).isTablet
-                        ? 4
-                        : 2, // Deux colonnes
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: ResponsiveBreakpoints.of(context).isDesktop
-                    ? 0.8
-                    : ResponsiveBreakpoints.of(context).isTablet
-                        ? 1
-                        : 1, // Ajuste la taille des cartes
-              ),
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return CustomItemWidget(
-                    tag: category, onTapCategory: onTapCategory);
-              },
-            ),
+            ],
           ),
         );
       },

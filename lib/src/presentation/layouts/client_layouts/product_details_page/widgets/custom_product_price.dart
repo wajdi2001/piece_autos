@@ -7,6 +7,7 @@ import 'package:piece_autos/src/presentation/controllers/global_bloc/global_bloc
 
 import '../../../../../data/models/brand_model.dart';
 import '../../../../../data/models/item_model.dart';
+import '../../../../shared/constants/app_colors.dart';
 
 class CustomProductPrice extends StatelessWidget {
   final ItemModel itemModel;
@@ -27,10 +28,9 @@ class CustomProductPrice extends StatelessWidget {
             .name;
 
         return Container(
-          height: 400,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
+            color: AppColors.widgetBackground,
             borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
@@ -78,7 +78,7 @@ class CustomProductPrice extends StatelessWidget {
               const SizedBox(height: 16),
               Text("Référence: ${itemModel.ref}"),
               Text("Fabricant: $brandName"),
-              const SizedBox(height: 16),
+const Spacer(),
               Row(
                 children: [
                   // Add to Cart Button
@@ -93,15 +93,15 @@ class CustomProductPrice extends StatelessWidget {
                                     quantity: 1)));
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: AppColors.primaryButtonColor,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: const Text(
+                      child:  Text(
                         "Ajouter au panier",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontSize: 16, color: AppColors.primaryButtonTextColor),
                       ),
                     ),
                   ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:piece_autos/src/data/models/item_model.dart';
 
+import '../../../../shared/constants/app_colors.dart';
+
 class CustomProductCaractristqueWidget extends StatelessWidget {
   final ItemModel itemModel;
   const CustomProductCaractristqueWidget({
@@ -17,7 +19,7 @@ class CustomProductCaractristqueWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-    
+    color: AppColors.widgetBackground,
         
         borderRadius: BorderRadius.circular(10),
       ),

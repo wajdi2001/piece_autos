@@ -16,6 +16,7 @@ class SignUpForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -41,9 +42,11 @@ class SignUpForm extends StatelessWidget {
                 context.read<AuthBloc>().add(AuthSignupEvent(email: emailController.text, password: passwordController.text, name: nameController.text, phoneNumber: phoneController.text,));
               },
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
+                overlayColor:Colors.blue,
                 minimumSize: const Size(double.infinity, 48),
               ),
-              child: const Text("S'inscrire"),
+              child: const Text("S'inscrire",style: TextStyle(color: Colors.white),),
             ),
           ],
         ),

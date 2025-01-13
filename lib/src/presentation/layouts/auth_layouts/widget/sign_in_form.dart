@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/src/presentation/controllers/auth_bloc/auth_bloc.dart';
 import 'package:piece_autos/src/presentation/layouts/auth_layouts/widget/custom_text_field.dart';
+import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
 
 class SignInForm extends StatelessWidget {
    SignInForm({super.key});
@@ -11,6 +12,7 @@ class SignInForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Colors.white,
       elevation: 4,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -45,38 +47,37 @@ class SignInForm extends StatelessWidget {
               ],
             ),
             ElevatedButton(
+              
               onPressed: () 
+
               {
-                                    context.read<AuthBloc>().add(AuthLoginEvent(email: emailController.text, password: passwordController.text,rememberMe: true ));
+                if(emailController.text.isEmpty && passwordController.text.isEmpty){
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text("Veuillez remplir les champs"),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                }else 
+                {
+                  
+                  context.read<AuthBloc>().add(AuthLoginEvent(email: emailController.text, password: passwordController.text,rememberMe: true ));
+                  emailController.clear();
+                  passwordController.clear();
+                }
+                                    
 
               },
               style: ElevatedButton.styleFrom(
+                backgroundColor:emailController.text.isEmpty && passwordController.text.isEmpty? Colors.grey:AppColors.primaryButtonColor,
+                overlayColor:Colors.blue,
+                
                 minimumSize: const Size(double.infinity, 48),
               ),
-              child: const Text("Se connecter"),
+              child:  Text("Se connecter",style: TextStyle(color: emailController.text.isEmpty && passwordController.text.isEmpty? Colors.white:AppColors.primaryButtonColor),),
             ),
             const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.facebook),
-              label: const Text("Continuer avec Facebook"),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 48),
-                backgroundColor: Colors.blue,
-              ),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.g_mobiledata),
-              label: const Text("Continuer avec Google"),
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 48),
-                backgroundColor: Colors.red,
-              ),
-            ),
+            
           ],
         ),
       ),

@@ -41,70 +41,72 @@ class CategoryDetailPage extends StatelessWidget {
             child: Text("No items available. Please try again later."),
           );
         }
-
+        int rowFactor=(state.items.length/7).ceil();
+        int spacingFactor =rowFactor>1?((rowFactor-1)*20):0;
         // Main UI when items are loaded
-        return Container(
-          height: 8 * 100,
-          width: double.infinity,
-          margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.white.withAlpha(128), // 50% opacity
-                Colors.white.withAlpha(77),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Affichage des articles pour : ${state.categoryTitile}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+               Text(
+                    "Articles :",
+                    style: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600,color: Colors.white),
                   ),
+                  const SizedBox(height: 10),
+              Container(
+                height: rowFactor * 204+ spacingFactor.toDouble()+30,
+                width: double.infinity,
+              
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.white.withAlpha(128), // 50% opacity
+                      Colors.white.withAlpha(77),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: ResponsiveBreakpoints.of(context).isDesktop
-                          ? 6
-                          : ResponsiveBreakpoints.of(context).isTablet
-                              ? 4
-                              : 2, // Number of columns based on screen size
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: ResponsiveBreakpoints.of(context).isDesktop
-                          ? 0.8
-                          : ResponsiveBreakpoints.of(context).isTablet
-                              ? 1
-                              : 1, // Adjust card size
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 15),
+                  child: Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: ResponsiveBreakpoints.of(context).isDesktop
+                            ? 7
+                            : ResponsiveBreakpoints.of(context).isTablet
+                                ? 4
+                                : 2, // Number of columns based on screen size
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        childAspectRatio: ResponsiveBreakpoints.of(context).isDesktop
+                            ? 1
+                            : ResponsiveBreakpoints.of(context).isTablet
+                                ? 1
+                                : 1, // Adjust card size
+                      ),
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            context
+                                .read<GlobalBloc>()
+                                .add(GlobalSelectItemEvent(itemId: items[index].id));
+                            onTapItemdetails();
+                          },
+                          child: CustomCategoryItemWidget(
+                            itemModel: items[index],
+                          ),
+                        );
+                      },
                     ),
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          context
-                              .read<GlobalBloc>()
-                              .add(GlobalSelectItemEvent(itemId: items[index].id));
-                          onTapItemdetails();
-                        },
-                        child: CustomCategoryItemWidget(
-                          itemModel: items[index],
-                        ),
-                      );
-                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

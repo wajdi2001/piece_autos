@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:piece_autos/src/presentation/layouts/admin_dashboard/admin_layout.dart';
 import 'package:piece_autos/src/presentation/layouts/auth_layouts/auth_page.dart';
+import 'package:piece_autos/src/presentation/layouts/client_layouts/checkout_page/checkout_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/tags_page/tags_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/category_details_page/category_detail_page.dart';
 import 'package:piece_autos/src/presentation/layouts/client_layouts/home_page/home_page.dart';
@@ -25,7 +26,8 @@ class AppRouter {
   static const categorieDetailsRoute = '/category';
   static const productRoute = '/product';
   static const adminDashboardRoute = '/admin'; // Admin Dashboard Route
-  static const authRoute = '/auth'; // Auth Route
+  static const authRoute = '/auth';
+  static const checkoutRoute = '/checkout';
   AppRouter._();
 
   static final router = GoRouter(
@@ -90,7 +92,7 @@ class AppRouter {
               ),
             ],
           ),
-        //branch 4: Product Details
+          //branch 4: Product Details
           StatefulShellBranch(
             navigatorKey: _tabNavigatorKey4,
             routes: [
@@ -104,28 +106,32 @@ class AppRouter {
                       )),
             ],
           ),
-          //branch 5: auth page 
+          //branch 5: auth page
           // Add auth routes here
-        StatefulShellBranch(
-          navigatorKey: _tabNavigatorKey5,
-          routes: 
-      [
-         GoRoute(
-                  path: authRoute,
-                  builder: (context, state) =>
-                      BlocBuilder<GlobalBloc, GlobalState>(
-                        builder: (context, state) {
-                          
-                          return AuthPage();
-                        },
-                      )),
-      ])
+          StatefulShellBranch(navigatorKey: _tabNavigatorKey5, routes: [
+            GoRoute(
+                path: authRoute,
+                builder: (context, state) =>
+                    BlocBuilder<GlobalBloc, GlobalState>(
+                      builder: (context, state) {
+                        return AuthPage();
+                      },
+                    )),
+          ])
         ],
       ),
       // Add Admin Dashboard as a standalone route
       GoRoute(
         path: adminDashboardRoute,
         builder: (context, state) => const AdminDashboard(),
+      ),
+      GoRoute(
+        path: checkoutRoute,
+        builder: (context, state) => BlocBuilder<GlobalBloc, GlobalState>(
+          builder: (context, state) {
+            return  CheckoutPage(shoppingCart: state.shoppingCart,);
+          },
+        ),
       ),
     ],
     errorBuilder: (context, state) => const ErrorPage(),

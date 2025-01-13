@@ -131,17 +131,17 @@ buildTextFieldDecoration({
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
         borderSide: BorderSide(
-            color: borderColor ?? AppColors.primaryRedColor, width: 1),
+            color: borderColor ?? AppColors.primaryColor, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(5),
         borderSide: BorderSide(
-            color: borderColor ?? AppColors.primaryRedColor, width: 1),
+            color: borderColor ?? AppColors.primaryColor, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         gapPadding: 0.0,
         borderRadius: BorderRadius.circular(5),
         borderSide: BorderSide(
-            color: borderColor ?? AppColors.primaryRedColor, width: 1),
+            color: borderColor ?? AppColors.primaryColor, width: 1),
       ),
     );

@@ -12,7 +12,7 @@ class HomeDrawer extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: AppColors.primaryRedColor,
+              color: AppColors.primaryColor,
             ),
             child: Center(
               child: Text(

@@ -34,6 +34,9 @@ dependencies:
   permission_handler: ^11.3.1
   pdf: ^3.11.1
   path_provider: ^2.1.5
+  badges: ^3.1.2
+  easy_stepper: ^0.8.5+1
+  stepper_list_view: ^0.0.2
 
   
   

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../../data/models/item_model.dart';
+import '../../../../shared/constants/app_colors.dart';
 
 class CustomProductDescrpitionWidget extends StatelessWidget {
   final ItemModel itemModel;
@@ -15,11 +16,13 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Onglets
-          const TabBar(
+           TabBar(
+            
+            padding: EdgeInsets.zero,
             dividerColor: Colors.white,
-            labelColor: Colors.blue,
+            labelColor: AppColors.widgetBackground,
             unselectedLabelColor: Colors.white,
-            indicatorColor: Colors.blue,
+            indicatorColor: AppColors.widgetBackground,
             tabs: [
               Tab(text: "Description"),
               Tab(text: "Références OEM"),
@@ -33,8 +36,8 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
             height: ResponsiveBreakpoints.of(context)
                                         .isMobile ||
                                     ResponsiveBreakpoints.of(context).isPhone ||
-                                    ResponsiveBreakpoints.of(context).isTablet?100:200 ,// Hauteur du contenu
-            padding: const EdgeInsets.all(8.0),
+                                    ResponsiveBreakpoints.of(context).isTablet?100:130 ,// Hauteur du contenu
+            padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
@@ -69,7 +72,9 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
   Widget _buildDescriptionTab() {
     List<String> descriptionKey = itemModel.description!.keys.toList();
     List<String> descriptionValue = itemModel.description!.values.toList();
-    return ListView(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children:  [
         Text(
           "Général",
@@ -78,13 +83,15 @@ class CustomProductDescrpitionWidget extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 8),
-        SizedBox(
-            height: 500 ,
-            child: ListView.builder(
-              itemCount: descriptionKey.length,
-              itemBuilder: (context, index) => _CaracteristiqueRow(label:descriptionKey[index], value: descriptionValue[index]),),
-          ),
+        Expanded(
+          child: Container(
+            height: 500,
+            margin: EdgeInsets.symmetric(horizontal: 18),
+              child: ListView.builder(
+                itemCount: descriptionKey.length,
+                itemBuilder: (context, index) => _CaracteristiqueRow(label:descriptionKey[index], value: descriptionValue[index]),),
+            ),
+        ),
         
         
       ],

@@ -9,6 +9,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../../../core/utils/cache_helper.dart';
 import '../../../controllers/global_bloc/global_bloc.dart';
+import '../../../shared/constants/app_colors.dart';
 import 'widgets/custom_product_description.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -39,9 +40,10 @@ class ProductDetailPage extends StatelessWidget {
       builder: (context, state) {
        
         return  Container(
-          height: 1000,
+          height: 650,
           width: double.infinity,
-          margin: EdgeInsets.all(10),
+          margin: EdgeInsets.symmetric(horizontal: 10 ),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -59,7 +61,7 @@ class ProductDetailPage extends StatelessWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -70,7 +72,7 @@ class ProductDetailPage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 8),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
+                      color: AppColors.widgetBackground,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -103,7 +105,7 @@ class ProductDetailPage extends StatelessWidget {
                                 : EdgeInsets.symmetric(horizontal: 8),
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.grey.shade50,
+                              color: AppColors.widgetBackground,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Row(

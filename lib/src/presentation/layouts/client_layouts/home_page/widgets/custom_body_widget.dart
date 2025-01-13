@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piece_autos/core/services/enums.dart';
 import 'package:piece_autos/src/data/models/brand_model.dart';
 import 'package:piece_autos/src/data/models/data_car_model.dart';
+import 'package:piece_autos/src/domain/entities/brand.dart';
 import 'package:piece_autos/src/presentation/shared/constants/app_colors.dart';
 import 'package:piece_autos/src/presentation/shared/library/searchble_drop_down/searchable_paginated_dropdown.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -57,18 +58,18 @@ class CustomBodyWidget extends StatelessWidget {
                     state.status == GlobalStatus.loaded ||
                             state.status == GlobalStatus.initial
                         ? _buildDropdownSection(context,
-                            brands: brands, carModels: carModels)
+                            brands: brands.where((e)=>e.brandType==BrandType.car).toList(), carModels: carModels)
                         : CircularProgressIndicator(),
 
                     const SizedBox(height: 10),
-
+                    if(state.selectedBrandId!=null && state.selectedCarModelId!=null)
                     // Validate Button
                     _buildValidateButton(),
 
                     const SizedBox(height: 20),
 
                     // Registration Search Section
-                    _buildRegistrationSearch(),
+                  //  _buildRegistrationSearch(),
                   ],
                 ),
               ),
@@ -85,7 +86,7 @@ class CustomBodyWidget extends StatelessWidget {
       required List<DataCarModel> carModels}) {
     int crossAxisCount = ResponsiveBreakpoints.of(context).isDesktop ||
             ResponsiveBreakpoints.of(context).isTablet
-        ? 2
+        ? 3
         : 1;
 
     return GridView(
@@ -96,7 +97,7 @@ class CustomBodyWidget extends StatelessWidget {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         childAspectRatio: ResponsiveBreakpoints.of(context).isDesktop
-            ? 15
+            ?11
             : ResponsiveBreakpoints.of(context).isTablet
                 ? 7
                 : 5,
@@ -117,10 +118,10 @@ class CustomBodyWidget extends StatelessWidget {
                             .name
                         : "Choisir la marque",
                     searchHint: "Saisir la marque",
-                    items: brands.map((e) => e.name).toList(),
+                    items: brands.map((e) => e.name ).toList(),
                     onItemSelected: (selectedBrandName) {
                       final selectedBrand = brands.firstWhere(
-                          (brand) => brand.name == selectedBrandName);
+                          (brand) => brand.name == selectedBrandName );
                       context
                           .read<GlobalBloc>()
                           .add(GlobalSelectBrandEvent(selectedBrand.id));
@@ -198,16 +199,16 @@ class CustomBodyWidget extends StatelessWidget {
       required bool enabled // Callback for item selection
       }) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Colors.white,
+        color: AppColors.widgetBackground,
       ),
       child: SearchableDropdown<String>(
         isEnabled: enabled,
         dialogOffset: 0.2,
         isDialogExpanded: false,
         searchHintText: searchHint,
-        hintText: Text(hint),
+        hintText: Text(hint,style: TextStyle(color: AppColors.blackOverlay),),
         items: List.generate(
           items.length,
           (i) => SearchableDropdownMenuItem(
@@ -215,7 +216,7 @@ class CustomBodyWidget extends StatelessWidget {
                 onItemSelected(items[i]), // Trigger callback on selection
             value: items[i],
             label: items[i],
-            child: Text(items[i]),
+            child: Center(child: Text(items[i])),
           ),
         ),
       ),
@@ -227,27 +228,31 @@ class CustomBodyWidget extends StatelessWidget {
 
   // Validate Button
   Widget _buildValidateButton() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.grey.shade300,
-      ),
-      width: 200,
-      height: 50,
-      child: TextButton(
-        onPressed: onPressed,
-        child: Center(
-          child: Text(
-            "Valider",
-            style: TextStyle(
-              color: AppColors.theardingColor,
-              fontFamily: "Montserrat",
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+    return BlocBuilder<GlobalBloc, GlobalState>(
+      builder: (context, state) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: state.selectedBrandId!=null && state.selectedCarModelId!=null?AppColors.primaryButtonColor:AppColors.greyColor,
+          ),
+          width: 200,
+          height: 50,
+          child: TextButton(
+            onPressed: onPressed,
+            child: Center(
+              child: Text(
+                "Valider",
+                style: TextStyle(
+                  color: AppColors.primaryButtonTextColor,
+                  fontFamily: "Montserrat",
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
